@@ -30,7 +30,17 @@
       "Bash(rosdep:*)",
       "Bash(vcs:*)",
       "Bash(source:*)",
-      "Bash(pytest:*)"
+      "Bash(pytest:*)",
+      "Bash(*)",
+      "Read(*)",
+      "Write(*)",
+      "Edit(*)",
+      "Glob(*)",
+      "Grep(*)",
+      "WebFetch(*)",
+      "WebSearch(*)",
+      "Agent(*)"
+    ]
     ],
       "deny": [
         "Bash(sudo:*)",
