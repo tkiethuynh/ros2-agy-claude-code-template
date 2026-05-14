@@ -121,6 +121,16 @@ executables — read them when you need the cheatsheet.
 | `nav2_servers`          | Lifecycle Manager, Velocity Smoother, Collision Monitor, Docking, Following, Python API |
 | `new_nav2_plugin`       | Scaffold recipe for `/new-nav2-plugin` |
 
+### gz-sim / Gazebo
+
+| Skill              | Topic |
+|--------------------|-------|
+| `gz-build`         | cmake / ninja, colcon, bazel build recipes for gz-sim |
+| `gz-test`          | ctest filters, gtest binary directly, headless / xvfb, performance |
+| `gz-ecs-overview`  | The Server / SimulationRunner / ECM / System loop in 5 minutes |
+| `new-component`    | Component header template (with or without custom serializer) |
+| `new-system`       | Full system plugin scaffold — header, source, CMake, plugin registration, integration test |
+
 ## Rules
 
 | Rule file               | What it constrains |
