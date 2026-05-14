@@ -1,10 +1,22 @@
-# ROS2 Clean Architecture Environment
+# ROS 2 + Gazebo Clean Architecture Environment
 
 ## Project Purpose
 
-This project establishes a standardized, robust, and maintainable environment for developing **ROS2 (Robot Operating System 2)** applications. It is designed to strictly adhere to **Clean Architecture** principles, ensuring that business logic is decoupled from the underlying ROS2 framework.
+This project establishes a standardized, robust, and maintainable environment for developing **two adjacent worlds** that robotics teams cross between every day:
 
-The primary goal is to provide a comprehensive set of rules, templates, and guidelines that enable developers to build scalable robotic software with consistent patterns in both **Python** and **C++**.
+1. **ROS 2 (Robot Operating System 2)** applications — designed to strictly adhere to **Clean Architecture** principles so business logic is decoupled from `rclpy` / `rclcpp`.
+2. **Gazebo Sim (`gz-sim`)** plugins and ECS systems — designed around the canonical **Entity-Component-System** model used by Gazebo.
+
+Both sides ship side by side in the same `.claude/` tree, prefix-disambiguated so they never collide:
+
+| Concern | ROS 2 side | gz-sim side |
+|---------|------------|-------------|
+| Build / Test / Lint | `/build` `/test` `/lint` (colcon, ament) | `/gz-build` `/gz-test` `/gz-lint` (cmake, ninja, bazel) |
+| Scaffold | `/new-package` `/new-node` `/new-nav2-plugin` | `/gz-new-component` `/gz-new-system` |
+| Review agent | `ros2-style-reviewer` | `gz-style-reviewer` |
+| Architecture agent | `clean-arch-architect` | `ecs-architect` |
+
+The primary goal is to provide a comprehensive set of rules, templates, and guidelines that enable developers to build scalable robotic software with consistent patterns in both **Python** and **C++** — across the ROS 2 application layer **and** the Gazebo simulation layer.
 
 ## Key Features
 
@@ -59,13 +71,24 @@ Executable workflow commands under `.claude/commands/`:
 | `/new-launch <pkg> <name>`             | Scaffold a modular launch file.               |
 | `/new-nav2-plugin <kind> <Class>`      | Scaffold a Nav 2 plugin.                      |
 | `/changelog [base] [pkg]`              | Generate a CHANGELOG.rst block from commits.  |
+| `/gz-build [extra cmake args]`         | cmake + ninja gz-sim build.                   |
+| `/gz-test [ctest regex]`               | ctest filtered run for gz-sim.                |
+| `/gz-lint [--all\|files]`              | pre-commit over changed-vs-main (gz-sim).     |
+| `/gz-new-component <Name>`             | Scaffold an ECS component header.             |
+| `/gz-new-system <name> [Class]`        | Scaffold a full gz-sim system plugin.         |
+| `/gz-changelog [base]`                 | Generate a `Changelog.md` block (gz-sim style). |
 
 ### 6. Sub-agents
 
 Specialized agents under `.claude/agents/` for use with the `Agent` tool:
 
+ROS 2 / Nav 2:
 - **`ros2-style-reviewer`** — strict PR review against Clean Architecture, lifecycle, QoS, pluginlib, tests, build manifests. Returns a file:line punch list.
 - **`clean-arch-architect`** — design advisor: where does this behaviour belong? node vs use case, topic vs service vs action, compose vs split.
+
+gz-sim / Gazebo:
+- **`gz-style-reviewer`** — strict PR review for gz-sim: ECS conventions, `GZ_ADD_PLUGIN`, CMake/Bazel parity, Migration.md / Changelog.md drift.
+- **`ecs-architect`** — design advisor: which Component holds this state, which `PreUpdate / Update / PostUpdate` phase, how to avoid singleton coupling.
 
 ## Getting Started
 
