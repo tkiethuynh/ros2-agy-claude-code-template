@@ -39,16 +39,53 @@ The `.claude/rules` directory contains detailed guidelines for:
 A library of "Skills" (`.claude/skills`) provides ready-to-use templates and explanations for:
 
 - **Node Creation & Lifecycle Management**
-- **messaging Patterns (Pub/Sub, Services, Actions)**
+- **Messaging Patterns (Pub/Sub, Services, Actions)**
 - **Launch Configuration & Parameters**
 - **TF2 Transforms & Diagnostics**
 - **Bag Recording & Replay**
+- **Nav 2 plugins** — controller / planner / behavior / smoother / costmap-layer / BT-node scaffolding
+
+### 5. Slash Commands
+
+Executable workflow commands under `.claude/commands/`:
+
+| Command                                | Purpose                                       |
+| -------------------------------------- | --------------------------------------------- |
+| `/build [pkg]`                         | `colcon build` wrapper (symlink, RelWithDebInfo). |
+| `/test [pkg] [filter]`                 | `colcon test` + result summary.               |
+| `/lint [--all\|files]`                 | `pre-commit` + ament linters.                 |
+| `/new-package <name> <py\|cpp>`        | Scaffold a Clean Architecture package.        |
+| `/new-node <pkg> <name> <kind> <lang>` | Scaffold a node (standard / lifecycle / component). |
+| `/new-launch <pkg> <name>`             | Scaffold a modular launch file.               |
+| `/new-nav2-plugin <kind> <Class>`      | Scaffold a Nav 2 plugin.                      |
+| `/changelog [base] [pkg]`              | Generate a CHANGELOG.rst block from commits.  |
+
+### 6. Sub-agents
+
+Specialized agents under `.claude/agents/` for use with the `Agent` tool:
+
+- **`ros2-style-reviewer`** — strict PR review against Clean Architecture, lifecycle, QoS, pluginlib, tests, build manifests. Returns a file:line punch list.
+- **`clean-arch-architect`** — design advisor: where does this behaviour belong? node vs use case, topic vs service vs action, compose vs split.
 
 ## Getting Started
 
-1.  **Review the Rules**: Check the `.claude/rules/` directory to understand the architectural standards.
-2.  **Use the Skills**: Refer to `.claude/skills/` for implementation examples and templates.
-3.  **Run Tests**: Use `colcon test` and `pytest` to verify your implementations.
+1.  **Skim `.claude/README.md`** for a complete index of what's available.
+2.  **Review the Rules**: Check the `.claude/rules/` directory to understand the architectural standards.
+3.  **Use the Skills**: Refer to `.claude/skills/` for implementation examples and templates.
+4.  **Try the Slash Commands**: `/build`, `/test`, `/new-package my_pkg python`.
+5.  **Run Tests**: Use `colcon test` and `pytest` to verify your implementations.
+
+## Adopting the template in a new workspace
+
+```bash
+cd ~/your_ws
+cp -r /path/to/ros2-claude-code-template/.claude .
+cp /path/to/ros2-claude-code-template/.gitignore .gitignore.template  # merge with yours
+```
+
+Then open the workspace with Claude Code — it will pick up
+`.claude/CLAUDE.md`, the skills, rules, commands, and agents
+automatically.
 
 ## License
 

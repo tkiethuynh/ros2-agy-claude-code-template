@@ -1,68 +1,168 @@
-# ROS2 Clean Architecture Project
+# ROS 2 + Gazebo Clean Architecture Project — Claude Context
 
-This project is set up with a comprehensive set of **Claude Skills** designed to facilitate ROS2 development following **Clean Architecture** principles.
+This file is the persistent orientation note Claude reads on every
+session in this workspace. Keep it short; deep content lives in
+`skills/`, `rules/`, and `agents/`.
 
-## Available Skills
+## What this template is
 
-The following skills are available in `.claude/skills` and can be used to guide development:
+A reusable `.claude/` configuration for **two adjacent worlds** that
+robotics teams routinely cross between:
 
-| Skill Name              | Description                               | Key Components                                                                        |
-| ----------------------- | ----------------------------------------- | ------------------------------------------------------------------------------------- |
-| **ros2_node_creation**  | Create Clean Architecture compliant Nodes | `BaseNode` template, Dependency Injection, QoS profiles (Python & C++)                |
-| **ros2_launch_config**  | Modular Launch files                      | Composition, `IncludeLaunchDescription`, Parameter management, C++ executable support |
-| **ros2_service_action** | Services and Actions                      | Server/Client wrappers, Domain Use Case integration (Python & C++)                    |
-| **ros2_messaging**      | Pub/Sub Patterns                          | Domain-driven publishers, Generic subscribers, Thread-safe buffers, Synchronization   |
-| **ros2_testing**        | Testing Strategy                          | Unit (Domain), Integration (Node), E2E (Launch), GTest/GMock support                  |
-| **ros2_lifecycle**      | Managed Nodes                             | Lifecycle Node templates, State transition management, Lifecycle Clients              |
-| **ros2_transforms**     | TF2 Management                            | TF2 Wrappers avoiding domain dependency on `geometry_msgs`                            |
-| **ros2_diagnostics**    | Health Monitoring                         | `diagnostic_updater` integration, Health entities, Frequency monitoring               |
-| **ros2_bag**            | Data Recording                            | Programmatic bag recording and replay utilities (rosbag2)                             |
+1. **ROS 2 / Nav 2** workspaces (Python + C++) that follow **Clean
+   Architecture** — colcon, ament, pluginlib.
+2. **Gazebo Sim (`gz-sim`)** source trees (C++) that follow the
+   **Entity-Component-System** model — cmake / ninja / bazel, plugin
+   registration via `GZ_ADD_PLUGIN`.
 
-### Nav2 (Navigation2) Skills
+Both sides ship as **prefix-disambiguated** skills, slash commands and
+sub-agents in the same `.claude/` tree. When you start a session, pick
+the prefix that matches the project you're touching:
 
-| Skill Name              | Description                               | Key Components                                                                        |
-| ----------------------- | ----------------------------------------- | ------------------------------------------------------------------------------------- |
-| **nav2_core_interfaces**| Nav2 Plugin Base Classes                  | Controller, GlobalPlanner, Smoother, GoalChecker, ProgressChecker, Behavior interfaces |
-| **nav2_controllers**    | Controller Plugins                        | DWB (13 critics), MPPI (11 critics), RPP, Graceful, Rotation Shim                    |
-| **nav2_planners**       | Planner Plugins                           | NavFn, SMAC (2D/Hybrid-A*/Lattice), Theta*, Route Server                             |
-| **nav2_behavior_tree**  | BT Nodes & Recovery Behaviors             | 82 BT nodes (47 action, 22 condition, 6 control, 7 decorator), 15 default BT XMLs    |
-| **nav2_costmap**        | Costmap2D Layers                          | Static, Obstacle, Voxel, Inflation, Range, Denoise layers + Keepout/Speed filters     |
-| **nav2_localization**   | AMCL & Map Server                         | Particle filter, motion/sensor models, map serving/saving                             |
-| **nav2_servers**        | Nav2 Server Nodes                         | Lifecycle manager, Velocity smoother, Collision monitor, Docking, Following, Python API|
+| Concern                          | ROS 2 side                | gz-sim side               |
+|----------------------------------|---------------------------|---------------------------|
+| Build                            | `/build`                  | `/gz-build`               |
+| Test                             | `/test`                   | `/gz-test`                |
+| Lint                             | `/lint`                   | `/gz-lint`                |
+| Scaffold a unit                  | `/new-package` / `/new-node` | `/gz-new-component` / `/gz-new-system` |
+| Changelog                        | `/changelog`              | `/gz-changelog`           |
+| Pre-PR review agent              | `ros2-style-reviewer`     | `gz-style-reviewer`       |
+| Architectural advisor            | `clean-arch-architect`    | `ecs-architect`           |
+| Architecture rule of thumb       | "domain has no ROS deps"  | "data in components, behaviour in systems" |
 
-## Nav2 Rules & References
+## Project layout
 
-| Rule File                | Description                               |
-| ------------------------ | ----------------------------------------- |
-| `nav2_architecture.md`   | Overall Nav2 system architecture (38 packages), data flow, design patterns |
-| `nav2_parameters.md`     | Complete parameter reference for all Nav2 servers and plugins |
-| `nav2_msgs_reference.md` | All 30 messages, 18 services, 19 actions with fields and error codes |
+A package generated through `/new-package` follows:
 
-## Nav2 Source Code
+```
+src/<pkg>/<pkg>/
+├── domain/           # entities, value objects, ports (no ROS deps)
+├── application/      # use cases (depends only on domain)
+├── infrastructure/   # rclpy / rclcpp nodes, TF, repositories
+└── presentation/     # CLI, launch entrypoints
+```
 
-Nav2 source is at `~/nav2_ws/src/navigation2/`. See `.claude/commands/nav2.md` for build, launch, and debugging commands.
+For C++ the same separation lives under `include/<pkg>/<layer>/` and
+`src/<layer>/`.
 
-## Project Structure
+## Where things live
 
-The project follows a strict separation of concerns:
+| You need to … | Look at |
+|---------------|---------|
+| Understand layer boundaries           | `rules/clean_architecture.md` |
+| Add a new package                     | `commands/new-package.md` + `skills/new_ros2_package/SKILL.md` |
+| Add a node                            | `commands/new-node.md` + `skills/ros2_node_creation/SKILL.md` |
+| Add a lifecycle node                  | `skills/ros2_lifecycle/SKILL.md` |
+| Add a launch file                     | `commands/new-launch.md` + `skills/ros2_launch_config/SKILL.md` |
+| Add a Nav 2 plugin                    | `commands/new-nav2-plugin.md` + `skills/new_nav2_plugin/SKILL.md` |
+| Pick QoS / topic naming               | `rules/ros2_communication.md` |
+| Write tests                           | `rules/testing.md` + `skills/ros2_testing/SKILL.md` |
+| Design something — which layer?       | Agent `clean-arch-architect` |
+| Review a diff before PR               | Agent `ros2-style-reviewer` |
 
-- **src/domain/**: Pure business logic, entities, and use cases. No ROS2 dependencies.
-- **src/application/**: Application services and interfaces. Orchestrates logic.
-- **src/infrastructure/**: ROS2 specific implementations (Nodes, Publishers, Subscribers).
+## Slash commands
 
-## Getting Started
+| Command | Purpose |
+|---------|---------|
+| `/build [pkg]`            | `colcon build` wrapper, `--symlink-install`, `RelWithDebInfo`. |
+| `/test [pkg] [filter]`    | `colcon test` + `test-result --all` with a clean summary. |
+| `/lint [--all|files]`     | `pre-commit` + ament linters on changed files. |
+| `/new-package <name> <py|cpp>` | Scaffold a Clean Architecture package. |
+| `/new-node <pkg> <name> <kind> <lang>` | Scaffold a node. |
+| `/new-launch <pkg> <name>`      | Scaffold a modular launch file. |
+| `/new-nav2-plugin <kind> <Class>` | Scaffold a Nav 2 plugin. |
+| `/changelog [base] [pkg]` | Generate a CHANGELOG.rst block from commits. |
+| `/gz-build [extra cmake args]` | `cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo` + build. |
+| `/gz-test [ctest regex]`  | `ctest --test-dir build` filtered by name. |
+| `/gz-lint [--all\|files]` | `pre-commit` over changed-vs-main in a gz-* repo. |
+| `/gz-new-component <Name>` | Scaffold an ECS component header. |
+| `/gz-new-system <name> [Class]` | Scaffold a full gz-sim system plugin. |
+| `/gz-changelog [base]`    | Generate a Changelog.md block from commits. |
 
-To use a skill, reference the skill file (e.g., `.claude/skills/ros2_node_creation/SKILL.md`) for templates and best practices.
+`commands/ros2.md` and `commands/nav2.md` are quick references, not
+executables — read them when you need the cheatsheet.
 
-## Common Commands
+## Sub-agents
 
-For a comprehensive list of ROS2 commands, build instructions, and debugging tools, please refer to:
+| Agent | When to use |
+|-------|-------------|
+| `ros2-style-reviewer` | Before opening a ROS 2 PR — Clean Architecture, lifecycle, QoS, pluginlib, tests, build manifests. |
+| `clean-arch-architect`| Before writing ROS 2 code — node vs use case, topic vs service vs action, compose vs split. |
+| `gz-style-reviewer`   | Before opening a gz-sim PR — ECS conventions, `GZ_ADD_PLUGIN`, CMake/Bazel parity, Migration.md / Changelog.md drift. |
+| `ecs-architect`       | Before writing gz-sim code — where new state lives (component vs PImpl), which system phase, threading. |
 
-- **[ROS2 Commands Reference](.claude/commands/ros2.md)**: `colcon`, `ros2`, `rqt`, etc.
-- **[Nav2 Commands Reference](.claude/commands/nav2.md)**: Nav2 launch, navigation, costmap, localization, docking, debugging commands
+## Skills index
 
-### Quick Reference
+### ROS 2 core
 
-- **Build**: `colcon build --symlink-install`
-- **Test**: `colcon test`
-- **Source**: `source install/setup.bash`
+| Skill                  | Topic |
+|------------------------|-------|
+| `ros2_node_creation`   | Clean-arch compliant node (Py/C++) |
+| `ros2_lifecycle`       | Managed lifecycle nodes |
+| `ros2_messaging`       | Pub/Sub, thread-safe buffers, synchronization |
+| `ros2_service_action`  | Service/Action server + client wrappers |
+| `ros2_launch_config`   | Modular launch files |
+| `ros2_transforms`      | TF2 wrappers without leaking `geometry_msgs` into domain |
+| `ros2_diagnostics`     | `diagnostic_updater` integration |
+| `ros2_bag`             | rosbag2 record / replay |
+| `ros2_testing`         | Unit, integration, launch_testing |
+| `new_ros2_package`     | Scaffold recipe for `/new-package` |
+
+### Nav 2
+
+| Skill                   | Topic |
+|-------------------------|-------|
+| `nav2_core_interfaces`  | Controller / GlobalPlanner / Smoother / GoalChecker / ProgressChecker / Behavior bases |
+| `nav2_controllers`      | DWB (13 critics), MPPI (11 critics), RPP, Graceful, Rotation Shim |
+| `nav2_planners`         | NavFn, SMAC (2D / Hybrid-A* / Lattice), Theta*, Route Server |
+| `nav2_behavior_tree`    | 82 BT nodes, 15 default trees |
+| `nav2_costmap`          | Static, Obstacle, Voxel, Inflation, Range, Denoise + filters |
+| `nav2_localization`     | AMCL, Map Server |
+| `nav2_servers`          | Lifecycle Manager, Velocity Smoother, Collision Monitor, Docking, Following, Python API |
+| `new_nav2_plugin`       | Scaffold recipe for `/new-nav2-plugin` |
+
+## Rules
+
+| Rule file               | What it constrains |
+|-------------------------|--------------------|
+| `clean_architecture.md` | Layer dependencies; what is allowed to import what |
+| `ros2_general.md`       | Project-wide ROS 2 prescriptions |
+| `ros2_nodes.md`         | Node design (lifecycle, callback groups, parameters) |
+| `ros2_communication.md` | Topic naming, QoS, custom interfaces |
+| `testing.md`            | Unit / integration / launch coverage requirements |
+| `nav2_architecture.md`  | Nav 2 system diagram, data flow |
+| `nav2_parameters.md`    | Canonical Nav 2 parameter reference |
+| `nav2_msgs_reference.md`| Nav 2 msgs / srvs / actions |
+| `robot_specific.md`     | Robot-level overrides — replace per project |
+
+## Conventions worth remembering
+
+* **Domain code does not import `rclpy`, `rclcpp`, or any `*_msgs`
+  package.** If it needs ROS, it is not domain.
+* **Lifecycle by default** for anything owning a resource (sensor,
+  actuator, costmap, hardware bridge).
+* **`declare_parameter` for every parameter** — silent
+  `get_parameter` on undeclared names is a bug.
+* **QoS matches semantics**: sensor data = best-effort, commands =
+  reliable, latched config = transient-local.
+* **Tests run via `colcon test`**; never `sleep(N)` to synchronize —
+  use futures, conditions, or `launch_testing.ReadyToTest`.
+* **Pluginlib aliases never change** once a release is cut.
+
+## Common commands
+
+```bash
+# Bring the workspace up
+colcon build --symlink-install
+source install/setup.bash
+
+# Quick check
+colcon test --packages-select <pkg>
+colcon test-result --all
+
+# Bringup
+ros2 launch nav2_bringup tb3_simulation_launch.py
+```
+
+See `.claude/commands/ros2.md` and `.claude/commands/nav2.md` for the
+full reference card.
