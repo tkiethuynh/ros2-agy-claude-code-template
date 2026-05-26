@@ -7,7 +7,7 @@ This project establishes a standardized, robust, and maintainable environment fo
 1. **ROS 2 (Robot Operating System 2)** applications — designed to strictly adhere to **Clean Architecture** principles so business logic is decoupled from `rclpy` / `rclcpp`.
 2. **Gazebo Sim (`gz-sim`)** plugins and ECS systems — designed around the canonical **Entity-Component-System** model used by Gazebo.
 
-Both sides ship side by side in the same `.claude/` tree, prefix-disambiguated so they never collide:
+Both sides ship side by side in the configuration trees (`.claude/` and `.agents/`), prefix-disambiguated so they never collide:
 
 | Concern | ROS 2 side | gz-sim side |
 |---------|------------|-------------|
@@ -39,7 +39,7 @@ Recognizing the dual nature of the ROS2 ecosystem, this environment provides equ
 
 ### 3. Comprehensive Rule Set
 
-The `.claude/rules` directory contains detailed guidelines for:
+The `rules/` directory (under `.claude/` or `.agents/`) contains detailed guidelines for:
 
 - **Architecture**: Defining layer boundaries and dependency rules.
 - **Node Development**: Patterns for creating robust and testable nodes.
@@ -48,7 +48,7 @@ The `.claude/rules` directory contains detailed guidelines for:
 
 ### 4. Developer Skills & Templates
 
-A library of "Skills" (`.claude/skills`) provides ready-to-use templates and explanations for:
+A library of "Skills" (`skills/` under `.claude/` or `.agents/`) provides ready-to-use templates and explanations for:
 
 - **Node Creation & Lifecycle Management**
 - **Messaging Patterns (Pub/Sub, Services, Actions)**
@@ -57,9 +57,9 @@ A library of "Skills" (`.claude/skills`) provides ready-to-use templates and exp
 - **Bag Recording & Replay**
 - **Nav 2 plugins** — controller / planner / behavior / smoother / costmap-layer / BT-node scaffolding
 
-### 5. Slash Commands
+### 5. Slash Commands / Workflows
 
-Executable workflow commands under `.claude/commands/`:
+Executable workflow commands / custom slash commands (under `.claude/commands/` or `.agents/workflows/`):
 
 | Command                                | Purpose                                       |
 | -------------------------------------- | --------------------------------------------- |
@@ -80,7 +80,7 @@ Executable workflow commands under `.claude/commands/`:
 
 ### 6. Sub-agents
 
-Specialized agents under `.claude/agents/` for use with the `Agent` tool:
+Specialized sub-agents (under `.claude/agents/` or `.agents/agents/`):
 
 ROS 2 / Nav 2:
 - **`ros2-style-reviewer`** — strict PR review against Clean Architecture, lifecycle, QoS, pluginlib, tests, build manifests. Returns a file:line punch list.
@@ -92,23 +92,31 @@ gz-sim / Gazebo:
 
 ## Getting Started
 
-1.  **Skim `.claude/README.md`** for a complete index of what's available.
-2.  **Review the Rules**: Check the `.claude/rules/` directory to understand the architectural standards.
-3.  **Use the Skills**: Refer to `.claude/skills/` for implementation examples and templates.
-4.  **Try the Slash Commands**: `/build`, `/test`, `/new-package my_pkg python`.
+1.  **Skim the configuration README** (`.claude/README.md` or `.agents/README.md`) for a complete index of what's available.
+2.  **Review the Rules**: Check the `rules/` directory to understand the architectural standards.
+3.  **Use the Skills**: Refer to `skills/` for implementation examples and templates.
+4.  **Try the Slash Commands / Workflows**: `/build`, `/test`, `/new-package my_pkg python`.
 5.  **Run Tests**: Use `colcon test` and `pytest` to verify your implementations.
 
 ## Adopting the template in a new workspace
 
+To support both **Antigravity (AGY)** and **Claude Code** in your workspace:
+
 ```bash
 cd ~/your_ws
-cp -r /path/to/ros2-claude-code-template/.claude .
-cp /path/to/ros2-claude-code-template/.gitignore .gitignore.template  # merge with yours
+# Copy the configuration directories
+cp -r /path/to/ros2-agy-claude-code-template/.claude .
+cp -r /path/to/ros2-agy-claude-code-template/.agents .
+
+# Copy the root orientation files
+cp /path/to/ros2-agy-claude-code-template/CLAUDE.md .
+cp /path/to/ros2-agy-claude-code-template/AGENTS.md .
+
+# Merge the gitignore settings
+cp /path/to/ros2-agy-claude-code-template/.gitignore .gitignore.template  # merge with yours
 ```
 
-Then open the workspace with Claude Code — it will pick up
-`.claude/CLAUDE.md`, the skills, rules, commands, and agents
-automatically.
+Then open the workspace with your preferred agent tool (**agy** or **claude**) — it will pick up the rules, skills, subagents, and commands/workflows automatically.
 
 ## License
 

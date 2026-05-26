@@ -31,5 +31,7 @@ compile_commands.json
 # clangd
 .cache/
 
-# Claude Code per-user overrides — do not commit personal settings
+# Agent per-user overrides — do not commit personal settings
 .claude/settings.local.json
+.agents/settings.local.json
+.agents/hooks.local.json

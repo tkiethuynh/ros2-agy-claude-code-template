@@ -23,7 +23,7 @@ every plugin kind — only the base class and the host server change.
 | Costmap layer       | `nav2_costmap_2d::Layer` / `CostmapLayer`   | `local_/global_costmap`    | `nav2_costmap_2d_plugins.xml` |
 | BT action / cond.   | `BT::SyncActionNode` / `BT::ConditionNode`  | `bt_navigator`             | `nav2_tree_nodes.xml`   |
 
-See `.claude/skills/nav2_core_interfaces/SKILL.md` for the full method
+See skills/nav2_core_interfaces/SKILL.md (under `.agents/` or `.claude/`) for the full method
 list of each base.
 
 ## Step 1 — header
