@@ -79,6 +79,10 @@ For C++ the same separation lives under `include/<pkg>/<layer>/` and
 | `/new-node <pkg> <name> <kind> <lang>` | Scaffold a node. |
 | `/new-launch <pkg> <name>`      | Scaffold a modular launch file. |
 | `/new-nav2-plugin <kind> <Class>` | Scaffold a Nav 2 plugin. |
+| `/new-controller <pkg> <Class> <plain\|chainable\|broadcaster>` | Scaffold a ros2_control controller / broadcaster. |
+| `/new-hardware <pkg> <Class> <system\|actuator\|sensor>` | Scaffold a ros2_control hardware component + URDF + bringup. |
+| `/new-bt-node <pkg> <Class> <kind>` | Scaffold a BehaviorTree.CPP / BehaviorTree.ROS2 leaf node. |
+| `/new-vda5050-connector <pkg> [py\|cpp] [fleet\|robot]` | Scaffold a Clean-Architecture VDA 5050 connector. |
 | `/changelog [base] [pkg]` | Generate a CHANGELOG.rst block from commits. |
 | `/gz-build [extra cmake args]` | `cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo` + build. |
 | `/gz-test [ctest regex]`  | `ctest --test-dir build` filtered by name. |

@@ -1,3 +1,8 @@
+---
+name: ros2_control_hardware_interface
+description: Scaffold a ros2_control hardware component (SystemInterface / ActuatorInterface / SensorInterface) and its bringup — the plugin (on_init/on_configure/on_activate, RT-safe read()/write()), URDF <ros2_control> wiring, controllers.yaml + launch, pluginlib export. Trigger when the user asks to integrate hardware or bring up a robot under ros2_control.
+---
+
 # Writing a ros2_control Hardware Component + Bringup
 
 How to bring up a real (or simulated) robot under ros2_control: write a

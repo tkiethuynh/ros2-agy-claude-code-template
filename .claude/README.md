@@ -115,6 +115,10 @@ Invoked directly from the terminal:
 /new-package my_pkg python
 /new-node my_pkg my_node lifecycle cpp
 /new-nav2-plugin controller MyController
+/new-controller my_pkg MyController chainable
+/new-hardware my_pkg MyRobotHardware system
+/new-bt-node my_pkg MyAction ros-action
+/new-vda5050-connector my_connector python robot
 /changelog
 
 # gz-sim / Gazebo
