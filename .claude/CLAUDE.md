@@ -61,6 +61,7 @@ For C++ the same separation lives under `include/<pkg>/<layer>/` and
 | Look up a ros2_controllers package    | `rules/ros2_controllers_reference.md` (full catalog) |
 | Write a ros2_control hardware component / bring up a robot | `skills/ros2_control_hardware_interface/SKILL.md` + `rules/ros2_control_demos.md` |
 | Find a runnable ros2_control example   | `rules/ros2_control_demos.md` (17-example map) |
+| Write a behavior-tree node (BT.CPP / ROS 2) | `rules/behaviortree_cpp.md` + `rules/behaviortree_ros2.md` + `skills/behaviortree_node_creation/SKILL.md` |
 | Bridge a VDA 5050 fleet interface     | `rules/vda5050_protocol.md` + `skills/vda5050_integration/SKILL.md` |
 | Look up any VDA 5050 message/field    | `rules/vda5050_messages.md` (complete spec) |
 | Generate VDA 5050 code (which format?) | `rules/vda5050_implementation_formats.md` (pydantic / ROS msg / C++ idioms + v2→v3 diffs) |
@@ -99,6 +100,7 @@ executables — read them when you need the cheatsheet.
 | `ecs-architect`       | Before writing gz-sim code — where new state lives (component vs PImpl), which system phase, threading. |
 | `vda5050-reviewer`    | Before opening a VDA 5050 connector PR — protocol compliance (topics, QoS, header, base/horizon, action state machine, schemas) + bridge Clean Architecture. |
 | `ros2-controllers-reviewer` | Before opening a ros2_control controller / broadcaster / hardware-component PR — lifecycle, command/state interface config, `update()`/`read()`/`write()` real-time safety, `generate_parameter_library`, pluginlib export, chainable correctness, URDF bringup, tests. |
+| `behaviortree-reviewer` | Before opening a BehaviorTree.CPP / BehaviorTree.ROS2 PR — node base-class choice, non-blocking ticks, ports/blackboard typing, factory/plugin registration, XML v4, ROS 2 wrapper contract. |
 
 ## Skills index
 
@@ -137,6 +139,12 @@ executables — read them when you need the cheatsheet.
 | `ros2_controller_creation`  | Write/extend a ros2_control controller or broadcaster (base class, interfaces, lifecycle, RT-safe `update()`, params, pluginlib) |
 | `ros2_control_hardware_interface` | Write a hardware component (System/Actuator/Sensor) + URDF `<ros2_control>` + bringup (from ros2_control_demos) |
 
+### Behavior trees
+
+| Skill                          | Topic |
+|--------------------------------|-------|
+| `behaviortree_node_creation`   | Write a BT leaf node — plain BehaviorTree.CPP (Sync/Stateful/Condition) or BehaviorTree.ROS2 wrappers (action/service/topic), ports, registration, XML v4 |
+
 ### Fleet interface
 
 | Skill                  | Topic |
@@ -168,6 +176,8 @@ executables — read them when you need the cheatsheet.
 | `ros2_control_architecture.md` | ros2_control framework — controller_manager, lifecycle, command/state interfaces, chainable controllers, RT rules |
 | `ros2_controllers_reference.md`| ros2_controllers package catalog (all controllers + broadcasters) |
 | `ros2_control_demos.md` | ros2_control_demos catalog (17 examples) + hardware-component & bringup learning map |
+| `behaviortree_cpp.md`   | BehaviorTree.CPP v4 core — node hierarchy, NodeStatus, factory, ports/blackboard, XML v4, loggers |
+| `behaviortree_ros2.md`  | BehaviorTree.ROS2 — action/service/topic wrappers + TreeExecutionServer |
 | `vda5050_protocol.md`   | VDA 5050 v3.0.0 fleet interface — MQTT topics, message overview, action state machine |
 | `vda5050_messages.md`   | VDA 5050 v3.0.0 **complete** message spec (all 8 messages, every field) + communication processes |
 | `vda5050_implementation_formats.md` | VDA 5050 code-gen format analysis — 3 reference idioms (pydantic / ROS `.msg`+bridge / C++ structs) + v2→v3 differences |
