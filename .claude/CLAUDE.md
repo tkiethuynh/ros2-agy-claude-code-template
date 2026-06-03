@@ -57,6 +57,8 @@ For C++ the same separation lives under `include/<pkg>/<layer>/` and
 | Add a Nav 2 plugin                    | `commands/new-nav2-plugin.md` + `skills/new_nav2_plugin/SKILL.md` |
 | Pick QoS / topic naming               | `rules/ros2_communication.md` |
 | Write tests                           | `rules/testing.md` + `skills/ros2_testing/SKILL.md` |
+| Write a ros2_control controller       | `rules/ros2_control_architecture.md` + `skills/ros2_controller_creation/SKILL.md` |
+| Look up a ros2_controllers package    | `rules/ros2_controllers_reference.md` (full catalog) |
 | Bridge a VDA 5050 fleet interface     | `rules/vda5050_protocol.md` + `skills/vda5050_integration/SKILL.md` |
 | Look up any VDA 5050 message/field    | `rules/vda5050_messages.md` (complete spec) |
 | Design something — which layer?       | Agent `clean-arch-architect` |
@@ -93,6 +95,7 @@ executables — read them when you need the cheatsheet.
 | `gz-style-reviewer`   | Before opening a gz-sim PR — ECS conventions, `GZ_ADD_PLUGIN`, CMake/Bazel parity, Migration.md / Changelog.md drift. |
 | `ecs-architect`       | Before writing gz-sim code — where new state lives (component vs PImpl), which system phase, threading. |
 | `vda5050-reviewer`    | Before opening a VDA 5050 connector PR — protocol compliance (topics, QoS, header, base/horizon, action state machine, schemas) + bridge Clean Architecture. |
+| `ros2-controllers-reviewer` | Before opening a ros2_control controller PR — lifecycle, command/state interface config, `update()` real-time safety, `generate_parameter_library`, pluginlib export, chainable correctness, tests. |
 
 ## Skills index
 
@@ -124,6 +127,12 @@ executables — read them when you need the cheatsheet.
 | `nav2_servers`          | Lifecycle Manager, Velocity Smoother, Collision Monitor, Docking, Following, Python API |
 | `new_nav2_plugin`       | Scaffold recipe for `/new-nav2-plugin` |
 
+### ros2_control
+
+| Skill                       | Topic |
+|-----------------------------|-------|
+| `ros2_controller_creation`  | Write/extend a ros2_control controller or broadcaster (base class, interfaces, lifecycle, RT-safe `update()`, params, pluginlib) |
+
 ### Fleet interface
 
 | Skill                  | Topic |
@@ -152,6 +161,8 @@ executables — read them when you need the cheatsheet.
 | `nav2_architecture.md`  | Nav 2 system diagram, data flow |
 | `nav2_parameters.md`    | Canonical Nav 2 parameter reference |
 | `nav2_msgs_reference.md`| Nav 2 msgs / srvs / actions |
+| `ros2_control_architecture.md` | ros2_control framework — controller_manager, lifecycle, command/state interfaces, chainable controllers, RT rules |
+| `ros2_controllers_reference.md`| ros2_controllers package catalog (all controllers + broadcasters) |
 | `vda5050_protocol.md`   | VDA 5050 v3.0.0 fleet interface — MQTT topics, message overview, action state machine |
 | `vda5050_messages.md`   | VDA 5050 v3.0.0 **complete** message spec (all 8 messages, every field) + communication processes |
 | `robot_specific.md`     | Robot-level overrides — replace per project |
