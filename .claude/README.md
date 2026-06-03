@@ -79,6 +79,8 @@ and use it directly.
 │   ├── nav2_architecture.md       — Nav 2 system architecture
 │   ├── nav2_parameters.md         — Nav 2 parameter reference
 │   ├── nav2_msgs_reference.md     — Nav 2 msg/srv/action list
+│   ├── vda5050_protocol.md        — VDA 5050 v3.0.0 fleet interface overview
+│   ├── vda5050_messages.md        — VDA 5050 v3.0.0 complete message spec + processes
 │   └── robot_specific.md          — Robot-specific settings (override these)
 └── agents/              # custom sub-agent definitions
     │  ── ROS 2 / Nav 2 ──
@@ -86,7 +88,9 @@ and use it directly.
     ├── clean-arch-architect.md    — Layer / dependency design advisor
     │  ── gz-sim / Gazebo ──
     ├── gz-style-reviewer.md       — gz-sim style / PR review expert
-    └── ecs-architect.md           — ECS design advisor
+    ├── ecs-architect.md           — ECS design advisor
+    │  ── VDA 5050 fleet interface ──
+    └── vda5050-reviewer.md        — VDA 5050 protocol-compliance PR reviewer
 ```
 
 ## How to use
