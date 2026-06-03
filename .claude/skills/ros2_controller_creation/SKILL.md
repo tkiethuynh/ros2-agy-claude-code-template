@@ -1,3 +1,8 @@
+---
+name: ros2_controller_creation
+description: Scaffold or extend a ros2_control controller or broadcaster (ControllerInterface / ChainableControllerInterface) — base-class choice, command/state interface configuration, lifecycle, real-time-safe update(), generate_parameter_library, pluginlib export, tests. Trigger when the user asks to write a ros2_control controller or broadcaster.
+---
+
 # Writing a ros2_control Controller / Broadcaster
 
 How to create or extend a controller in the **ros2_control** framework,

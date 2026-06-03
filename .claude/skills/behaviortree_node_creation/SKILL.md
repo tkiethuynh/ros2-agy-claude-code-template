@@ -1,3 +1,8 @@
+---
+name: behaviortree_node_creation
+description: Scaffold a Behavior Tree leaf node — plain BehaviorTree.CPP (SyncActionNode / StatefulActionNode / ConditionNode) or a BehaviorTree.ROS2 wrapper (RosActionNode / RosServiceNode / RosTopicPubNode / RosTopicSubNode) — with ports, factory/plugin registration, and XML v4 usage. Trigger when the user asks to write a behavior-tree node (not Nav 2-specific).
+---
+
 # Writing a Behavior Tree Node (BehaviorTree.CPP + ROS 2)
 
 How to write, register, and use a custom behavior-tree leaf node — both

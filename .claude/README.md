@@ -107,6 +107,9 @@ and use it directly.
 Invoked directly from the terminal:
 
 ```
+# Start from zero
+/new-workspace ~/my_robot_ws acme   # bootstrap a complete colcon workspace
+
 # ROS 2 / Nav 2
 /build                    # whole workspace (colcon)
 /build my_pkg             # a single package only
@@ -115,7 +118,16 @@ Invoked directly from the terminal:
 /new-package my_pkg python
 /new-node my_pkg my_node lifecycle cpp
 /new-nav2-plugin controller MyController
+/new-controller my_pkg MyController chainable
+/new-hardware my_pkg MyRobotHardware system
+/new-bt-node my_pkg MyAction ros-action
+/new-vda5050-connector my_connector python robot
 /changelog
+
+# Extend this template itself (self-extensible)
+/new-skill   my_topic_helper
+/new-command new-my-thing
+/new-agent   my-domain-reviewer
 
 # gz-sim / Gazebo
 /gz-build                 # cmake -B build && ninja

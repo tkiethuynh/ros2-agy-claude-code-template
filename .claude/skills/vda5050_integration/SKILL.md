@@ -1,3 +1,8 @@
+---
+name: vda5050_integration
+description: Bridge a VDA 5050 v3.0.0 fleet-control interface (MQTT/JSON) onto Nav 2 under Clean Architecture — domain entities, MQTT/Nav 2 adapters behind ports, order→NavigateThroughPoses mapping, state aggregation, action handlers. Trigger when the user asks to build or extend a VDA 5050 connector / fleet bridge.
+---
+
 # VDA 5050 ↔ ROS 2 / Nav 2 Integration
 
 How to bridge a **VDA 5050 v3.0.0** fleet-control interface (MQTT/JSON)

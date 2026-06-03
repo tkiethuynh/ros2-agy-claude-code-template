@@ -50,6 +50,7 @@ For C++ the same separation lives under `include/<pkg>/<layer>/` and
 | You need to … | Look at |
 |---------------|---------|
 | Understand layer boundaries           | `rules/clean_architecture.md` |
+| Bootstrap a whole workspace from zero | `commands/new-workspace.md` + `skills/new_ros2_workspace/SKILL.md` |
 | Add a new package                     | `commands/new-package.md` + `skills/new_ros2_package/SKILL.md` |
 | Add a node                            | `commands/new-node.md` + `skills/ros2_node_creation/SKILL.md` |
 | Add a lifecycle node                  | `skills/ros2_lifecycle/SKILL.md` |
@@ -67,6 +68,7 @@ For C++ the same separation lives under `include/<pkg>/<layer>/` and
 | Generate VDA 5050 code (which format?) | `rules/vda5050_implementation_formats.md` (pydantic / ROS msg / C++ idioms + v2→v3 diffs) |
 | Design something — which layer?       | Agent `clean-arch-architect` |
 | Review a diff before PR               | Agent `ros2-style-reviewer` |
+| Add a new command / skill / agent / rule | `skills/extending_claude_config/SKILL.md` + `/new-command` `/new-skill` `/new-agent` |
 
 ## Slash commands
 
@@ -75,10 +77,16 @@ For C++ the same separation lives under `include/<pkg>/<layer>/` and
 | `/build [pkg]`            | `colcon build` wrapper, `--symlink-install`, `RelWithDebInfo`. |
 | `/test [pkg] [filter]`    | `colcon test` + `test-result --all` with a clean summary. |
 | `/lint [--all|files]`     | `pre-commit` + ament linters on changed files. |
+| `/new-workspace <path> [prefix]` | Bootstrap a complete colcon workspace from zero. |
 | `/new-package <name> <py|cpp>` | Scaffold a Clean Architecture package. |
 | `/new-node <pkg> <name> <kind> <lang>` | Scaffold a node. |
 | `/new-launch <pkg> <name>`      | Scaffold a modular launch file. |
 | `/new-nav2-plugin <kind> <Class>` | Scaffold a Nav 2 plugin. |
+| `/new-controller <pkg> <Class> <plain\|chainable\|broadcaster>` | Scaffold a ros2_control controller / broadcaster. |
+| `/new-hardware <pkg> <Class> <system\|actuator\|sensor>` | Scaffold a ros2_control hardware component + URDF + bringup. |
+| `/new-bt-node <pkg> <Class> <kind>` | Scaffold a BehaviorTree.CPP / BehaviorTree.ROS2 leaf node. |
+| `/new-vda5050-connector <pkg> [py\|cpp] [fleet\|robot]` | Scaffold a Clean-Architecture VDA 5050 connector. |
+| `/new-skill <name>` / `/new-command <name>` / `/new-agent <name>` | Extend this `.claude/` config with a new asset (self-extensibility). |
 | `/changelog [base] [pkg]` | Generate a CHANGELOG.rst block from commits. |
 | `/gz-build [extra cmake args]` | `cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo` + build. |
 | `/gz-test [ctest regex]`  | `ctest --test-dir build` filtered by name. |
@@ -118,6 +126,7 @@ executables — read them when you need the cheatsheet.
 | `ros2_bag`             | rosbag2 record / replay |
 | `ros2_testing`         | Unit, integration, launch_testing |
 | `new_ros2_package`     | Scaffold recipe for `/new-package` |
+| `new_ros2_workspace`   | Bootstrap a whole colcon workspace from zero (`/new-workspace`) |
 
 ### Nav 2
 
@@ -160,6 +169,12 @@ executables — read them when you need the cheatsheet.
 | `gz-ecs-overview`  | The Server / SimulationRunner / ECM / System loop in 5 minutes |
 | `new-component`    | Component header template (with or without custom serializer) |
 | `new-system`       | Full system plugin scaffold — header, source, CMake, plugin registration, integration test |
+
+### Meta — extending this template
+
+| Skill                     | Topic |
+|---------------------------|-------|
+| `extending_claude_config` | Author a new rule / skill / command / agent for this `.claude/` config and index it (`/new-skill`, `/new-command`, `/new-agent`) |
 
 ## Rules
 
