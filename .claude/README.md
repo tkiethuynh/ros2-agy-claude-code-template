@@ -79,14 +79,26 @@ and use it directly.
 │   ├── nav2_architecture.md       — Nav 2 system architecture
 │   ├── nav2_parameters.md         — Nav 2 parameter reference
 │   ├── nav2_msgs_reference.md     — Nav 2 msg/srv/action list
+│   ├── ros2_control_architecture.md — ros2_control framework & lifecycle
+│   ├── ros2_controllers_reference.md — ros2_controllers package catalog
+│   ├── ros2_control_demos.md      — ros2_control_demos example catalog (17)
+│   ├── behaviortree_cpp.md        — BehaviorTree.CPP v4 core reference
+│   ├── behaviortree_ros2.md       — BehaviorTree.ROS2 wrappers + execution server
+│   ├── vda5050_protocol.md        — VDA 5050 v3.0.0 fleet interface overview
+│   ├── vda5050_messages.md        — VDA 5050 v3.0.0 complete message spec + processes
+│   ├── vda5050_implementation_formats.md — VDA 5050 code-gen format analysis (3 reference idioms)
 │   └── robot_specific.md          — Robot-specific settings (override these)
 └── agents/              # custom sub-agent definitions
     │  ── ROS 2 / Nav 2 ──
     ├── ros2-style-reviewer.md     — ROS 2 / Clean-arch PR review expert
     ├── clean-arch-architect.md    — Layer / dependency design advisor
+    ├── ros2-controllers-reviewer.md — ros2_control controller PR reviewer
+    ├── behaviortree-reviewer.md   — BehaviorTree.CPP / ROS2 PR reviewer
     │  ── gz-sim / Gazebo ──
     ├── gz-style-reviewer.md       — gz-sim style / PR review expert
-    └── ecs-architect.md           — ECS design advisor
+    ├── ecs-architect.md           — ECS design advisor
+    │  ── VDA 5050 fleet interface ──
+    └── vda5050-reviewer.md        — VDA 5050 protocol-compliance PR reviewer
 ```
 
 ## How to use
