@@ -63,6 +63,7 @@ For C++ the same separation lives under `include/<pkg>/<layer>/` and
 | Find a runnable ros2_control example   | `rules/ros2_control_demos.md` (17-example map) |
 | Bridge a VDA 5050 fleet interface     | `rules/vda5050_protocol.md` + `skills/vda5050_integration/SKILL.md` |
 | Look up any VDA 5050 message/field    | `rules/vda5050_messages.md` (complete spec) |
+| Generate VDA 5050 code (which format?) | `rules/vda5050_implementation_formats.md` (pydantic / ROS msg / C++ idioms + v2→v3 diffs) |
 | Design something — which layer?       | Agent `clean-arch-architect` |
 | Review a diff before PR               | Agent `ros2-style-reviewer` |
 
@@ -169,6 +170,7 @@ executables — read them when you need the cheatsheet.
 | `ros2_control_demos.md` | ros2_control_demos catalog (17 examples) + hardware-component & bringup learning map |
 | `vda5050_protocol.md`   | VDA 5050 v3.0.0 fleet interface — MQTT topics, message overview, action state machine |
 | `vda5050_messages.md`   | VDA 5050 v3.0.0 **complete** message spec (all 8 messages, every field) + communication processes |
+| `vda5050_implementation_formats.md` | VDA 5050 code-gen format analysis — 3 reference idioms (pydantic / ROS `.msg`+bridge / C++ structs) + v2→v3 differences |
 | `robot_specific.md`     | Robot-level overrides — replace per project |
 
 ## Conventions worth remembering

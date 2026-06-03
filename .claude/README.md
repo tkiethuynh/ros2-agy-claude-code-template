@@ -84,6 +84,7 @@ and use it directly.
 │   ├── ros2_control_demos.md      — ros2_control_demos example catalog (17)
 │   ├── vda5050_protocol.md        — VDA 5050 v3.0.0 fleet interface overview
 │   ├── vda5050_messages.md        — VDA 5050 v3.0.0 complete message spec + processes
+│   ├── vda5050_implementation_formats.md — VDA 5050 code-gen format analysis (3 reference idioms)
 │   └── robot_specific.md          — Robot-specific settings (override these)
 └── agents/              # custom sub-agent definitions
     │  ── ROS 2 / Nav 2 ──

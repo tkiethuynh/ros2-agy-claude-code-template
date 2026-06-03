@@ -19,6 +19,14 @@ Ground your review in:
   spec + communication processes (the authority for field-level checks).
 * `.claude/rules/clean_architecture.md` — layer boundaries for the bridge.
 * `.claude/skills/vda5050_integration/SKILL.md` — the reference layering.
+* `.claude/rules/vda5050_implementation_formats.md` — the three accepted
+  code formats (pydantic / ROS `.msg`+bridge / C++ structs) and the
+  v2→v3 enum/field differences. Check the diff's model representation
+  against the matching idiom, and flag v2 spellings
+  (`CONNECTIONBROKEN`/`TEACHIN`, missing `SINGLE`/`HIBERNATING`/`RETRIABLE`)
+  when the project targets v3.0.0.
+* Real reference impls: `~/nav2_ws/src/isaac_mission_dispatch`,
+  `isaac_ros_cloud_control`, `vda5050_core`.
 * When a detail is ambiguous, consult `~/nav2_ws/src/VDA5050/`
   (`VDA5050_EN.md`, `json_schemas/*.schema`) — the JSON schema is the
   machine-checkable truth, the VDA PDF/document wins on conflicts.

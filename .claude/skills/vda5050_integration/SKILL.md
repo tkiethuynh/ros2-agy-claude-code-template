@@ -5,6 +5,11 @@ onto a Nav 2 stack **without breaking Clean Architecture**.
 
 - Protocol overview: `rules/vda5050_protocol.md`.
 - Complete message/field spec + processes: `rules/vda5050_messages.md`.
+- **Code-generation format analysis** (3 proven idioms — pydantic /
+  ROS `.msg`+bridge / C++ structs): `rules/vda5050_implementation_formats.md`.
+  Real reference repos in `~/nav2_ws/src/`: `isaac_mission_dispatch`
+  (fleet/pydantic), `isaac_ros_cloud_control` (robot/ROS 2),
+  `vda5050_core` (C++ core).
 - Authoritative spec + JSON schemas: `~/nav2_ws/src/VDA5050/`
   (`VDA5050_EN.md`, `json_schemas/*.schema`).
 - **Reference implementation** (working, Clean-Architecture):
