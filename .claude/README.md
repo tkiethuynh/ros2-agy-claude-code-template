@@ -81,6 +81,7 @@ and use it directly.
 │   ├── nav2_msgs_reference.md     — Nav 2 msg/srv/action list
 │   ├── ros2_control_architecture.md — ros2_control framework & lifecycle
 │   ├── ros2_controllers_reference.md — ros2_controllers package catalog
+│   ├── ros2_control_demos.md      — ros2_control_demos example catalog (17)
 │   ├── vda5050_protocol.md        — VDA 5050 v3.0.0 fleet interface overview
 │   ├── vda5050_messages.md        — VDA 5050 v3.0.0 complete message spec + processes
 │   └── robot_specific.md          — Robot-specific settings (override these)

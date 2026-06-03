@@ -1,6 +1,6 @@
 ---
 name: ros2-controllers-reviewer
-description: Use proactively before opening a PR that adds or changes a ros2_control controller / broadcaster. Reviews a diff against ros2_controllers conventions — controller lifecycle, command/state interface configuration, real-time safety of update(), generate_parameter_library usage, pluginlib registration, chainable-controller correctness, and tests. Returns a punch list with file:line anchors, not a rewrite.
+description: Use proactively before opening a PR that adds or changes a ros2_control controller, broadcaster, or hardware component (incl. URDF <ros2_control> bringup). Reviews a diff against ros2_controllers / ros2_control_demos conventions — controller & hardware lifecycle, command/state interface configuration, real-time safety of update()/read()/write(), generate_parameter_library usage, pluginlib registration, chainable-controller correctness, URDF wiring, and tests. Returns a punch list with file:line anchors, not a rewrite.
 tools: ["Bash", "Read", "Grep", "Glob"]
 model: sonnet
 ---
@@ -16,10 +16,14 @@ Ground your review in:
 * `.claude/rules/ros2_controllers_reference.md` — per-package catalog (the
   closest existing controller to compare against).
 * `.claude/skills/ros2_controller_creation/SKILL.md` — the canonical
-  skeleton.
+  controller skeleton.
+* For hardware components & bringup: `.claude/rules/ros2_control_demos.md`
+  + `.claude/skills/ros2_control_hardware_interface/SKILL.md`.
 * When unsure, read the real reference packages in
   `~/nav2_ws/src/ros2_controllers/` (`diff_drive_controller`,
-  `forward_command_controller`, `imu_sensor_broadcaster`, `pid_controller`).
+  `forward_command_controller`, `imu_sensor_broadcaster`, `pid_controller`)
+  and `~/nav2_ws/src/ros2_control_demos/` (`example_1`, `example_5`,
+  `example_6`, `example_12`).
 
 ## Process
 
@@ -95,6 +99,25 @@ Ground your review in:
 * `package.xml` lists `controller_interface`, `pluginlib`,
   `generate_parameter_library`, `realtime_tools`, message deps — no
   missing or orphan deps.
+
+### Hardware components & bringup (if the diff touches them)
+* The component derives from the right base — `SystemInterface` (whole
+  robot), `ActuatorInterface` (one actuator), or `SensorInterface`
+  (read-only); a `SensorInterface` must **not** export command interfaces.
+* `on_init(HardwareComponentInterfaceParams)` calls the base `on_init`,
+  reads custom params from `info_.hardware_parameters`, and does **no**
+  device I/O; device handles opened in `on_configure`/`on_activate`.
+* `read()` / `write()` are **RT-safe** (same rules as `update()` — no
+  alloc/locks/throw/blocking I/O/unthrottled logging); `write()` respects
+  `period`.
+* Plugin: `<pkg>.xml` `base_class_type=hardware_interface::*Interface`,
+  matching `PLUGINLIB_EXPORT_CLASS(...)` and
+  `pluginlib_export_plugin_description_file(hardware_interface …)`.
+* URDF `<ros2_control>`: `<plugin>` string equals the pluginlib alias;
+  `<command_interface>`/`<state_interface>` names match what controllers
+  claim; custom `<param>`s consumed in `on_init`.
+* Bringup: `controllers.yaml` sets a sane `update_rate`; launch starts
+  `joint_state_broadcaster` before command controllers.
 
 ### Tests & docs
 * New behaviour has a gtest that drives the lifecycle and calls `update()`
