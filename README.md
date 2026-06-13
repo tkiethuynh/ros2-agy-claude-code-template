@@ -56,6 +56,10 @@ A library of "Skills" (`skills/` under `.claude/` or `.agents/`) provides ready-
 - **TF2 Transforms & Diagnostics**
 - **Bag Recording & Replay**
 - **Nav 2 plugins** — controller / planner / behavior / smoother / costmap-layer / BT-node scaffolding
+- **ros2_control** — controller and hardware interface components
+- **Behavior Trees** — BehaviorTree.CPP v4 core and BehaviorTree.ROS2 node integration
+- **Fleet Interface** — VDA 5050 v3.0.0 connector implementation
+- **Self-Extensibility** — Extending this configuration with custom skills, commands, rules, and agents
 
 ### 5. Slash Commands / Workflows
 
@@ -66,10 +70,18 @@ Executable workflow commands / custom slash commands (under `.claude/commands/` 
 | `/build [pkg]`                         | `colcon build` wrapper (symlink, RelWithDebInfo). |
 | `/test [pkg] [filter]`                 | `colcon test` + result summary.               |
 | `/lint [--all\|files]`                 | `pre-commit` + ament linters.                 |
+| `/new-workspace <path> [prefix]`       | Bootstrap a complete colcon workspace from zero. |
 | `/new-package <name> <py\|cpp>`        | Scaffold a Clean Architecture package.        |
 | `/new-node <pkg> <name> <kind> <lang>` | Scaffold a node (standard / lifecycle / component). |
 | `/new-launch <pkg> <name>`             | Scaffold a modular launch file.               |
 | `/new-nav2-plugin <kind> <Class>`      | Scaffold a Nav 2 plugin.                      |
+| `/new-controller <pkg> <Class> <plain\|chainable\|broadcaster>` | Scaffold a ros2_control controller / broadcaster. |
+| `/new-hardware <pkg> <Class> <system\|actuator\|sensor>` | Scaffold a ros2_control hardware component + URDF + bringup. |
+| `/new-bt-node <pkg> <Class> <kind>`    | Scaffold a BehaviorTree.CPP / BehaviorTree.ROS2 leaf node. |
+| `/new-vda5050-connector <pkg> [py\|cpp] [fleet\|robot]` | Scaffold a Clean-Architecture VDA 5050 connector. |
+| `/new-skill <name>`                    | Author a new skill template.                  |
+| `/new-command <name>`                  | Author a new slash command workflow.          |
+| `/new-agent <name>`                    | Author a new sub-agent profile.               |
 | `/changelog [base] [pkg]`              | Generate a CHANGELOG.rst block from commits.  |
 | `/gz-build [extra cmake args]`         | cmake + ninja gz-sim build.                   |
 | `/gz-test [ctest regex]`               | ctest filtered run for gz-sim.                |
@@ -85,10 +97,15 @@ Specialized sub-agents (under `.claude/agents/` or `.agents/agents/`):
 ROS 2 / Nav 2:
 - **`ros2-style-reviewer`** — strict PR review against Clean Architecture, lifecycle, QoS, pluginlib, tests, build manifests. Returns a file:line punch list.
 - **`clean-arch-architect`** — design advisor: where does this behaviour belong? node vs use case, topic vs service vs action, compose vs split.
+- **`ros2-controllers-reviewer`** — audits lifecycle, real-time safety, parameter configurations, and URDF bringup.
+- **`behaviortree-reviewer`** — audits ports, non-blocking ticks, factory registration, and XML wrappers for BehaviorTree.CPP/ROS2.
+- **`vda5050-reviewer`** — audits MQTT/JSON message formats, schemas, and connection state machines against VDA 5050 compliance.
 
 gz-sim / Gazebo:
 - **`gz-style-reviewer`** — strict PR review for gz-sim: ECS conventions, `GZ_ADD_PLUGIN`, CMake/Bazel parity, Migration.md / Changelog.md drift.
 - **`ecs-architect`** — design advisor: which Component holds this state, which `PreUpdate / Update / PostUpdate` phase, how to avoid singleton coupling.
+
+
 
 ## Getting Started
 
