@@ -1,126 +1,194 @@
-# Agent Configuration — ROS 2 / Nav 2 + Gazebo Sim Clean Architecture Template
+# .claude — ROS 2 / Nav 2 + Gazebo Sim Clean Architecture Template
 
-This directory establishes the workspace configurations, rules, skills, sub-agents, and commands/workflows for both **Antigravity (AGY)** and **Claude Code** agents. 
+This folder is the persistent configuration that lets Claude Code work
+on ROS 2 (especially Nav 2) **and** Gazebo Sim (gz-sim, the ECS C++
+side) projects while staying faithful to Clean Architecture principles.
+When you start a new project you can copy this template as `.claude/`
+and use it directly.
 
-By separating instructions and tooling from your core application logic, this template ensures consistent code quality, strict adherence to architectural boundaries, and reproducible development workflows.
-
-> [!NOTE]
-> Two parallel, prefix-disambiguated configurations operate side-by-side:
-> * **ROS 2 / Nav 2 side** → `colcon`, `ament`, `pluginlib`, Clean Architecture layers, Python and C++.
-> * **gz-sim / Gazebo side** → `cmake`, `ninja`, `bazel`, Entity-Component-System (ECS) pattern, plugin scaffolding.
+> Two parallel sets run side by side:
+> * **ROS 2 / Nav 2** side → colcon, ament, pluginlib, Clean
+>   Architecture layers, Python+C++.
+> * **gz-sim / Gazebo** side → cmake / ninja / bazel, Entity-Component-
+>   System, plugin scaffolding.
 >
-> Command and workflow names are prefix-disambiguated: `/build` (colcon) ⟷ `/gz-build` (cmake); `/test` ⟷ `/gz-test`; `ros2-style-reviewer` ⟷ `gz-style-reviewer`; `clean-arch-architect` ⟷ `ecs-architect`.
+> Command names are separated by a **prefix**: `/build` (colcon) ⟷ `/gz-build`
+> (cmake); `/test` ⟷ `/gz-test`; `ros2-style-reviewer` ⟷
+> `gz-style-reviewer`; `clean-arch-architect` ⟷ `ecs-architect`.
+> Call the one you mean on purpose; both are loaded and active.
 
----
+## Quick overview
 
-## Directory Structure
-
-```text
-.claude/ (and mirrored via .agents/)
-├── README.md            # This file (Unified overview)
-├── CLAUDE.md            # Orientation context (referenced by agents)
-├── settings.json        # Execution permissions, workspace hooks, and environments
-├── commands/            # Custom commands / workflows (under .agents/workflows/)
+```
+.claude/
+├── README.md            # this file (English overview)
+├── CLAUDE.md            # persistent project context loaded into Claude
+├── settings.json        # permissions / hooks / env variables
+├── commands/            # /slash commands (invoked from the terminal)
+│   │  ── ROS 2 / Nav 2 side ──
 │   ├── build.md             — /build           colcon build wrapper
-│   ├── test.md              — /test            colcon test & summary generator
-│   ├── lint.md              — /lint            ament linter & pre-commit hooks
-│   ├── new-package.md       — /new-package     Scaffold a Clean Architecture ROS 2 package
-│   ├── new-node.md          — /new-node        Scaffold standard/lifecycle/composable nodes
-│   ├── new-launch.md        — /new-launch      Scaffold modular launch configurations
-│   ├── new-nav2-plugin.md   — /new-nav2-plugin Scaffold Nav 2 plugin integrations
-│   ├── changelog.md         — /changelog       Generate CHANGELOG.rst block from git history
-│   ├── ros2.md              —                  ROS 2 cheat sheet & quick reference
-│   ├── nav2.md              —                  Nav 2 cheat sheet & quick reference
-│   ├── gz-build.md          — /gz-build        cmake & ninja Gazebo build wrapper
-│   ├── gz-test.md           — /gz-test         ctest Gazebo integration test runner
-│   ├── gz-lint.md           — /gz-lint         pre-commit hooks for Gazebo modules
-│   ├── gz-new-component.md  — /gz-new-component Scaffold ECS component headers
-│   ├── gz-new-system.md     — /gz-new-system   Scaffold ECS system plugin structures
-│   └── gz-changelog.md      — /gz-changelog    Generate Gazebo Changelog.md block
-├── skills/              # Reusable agent recipe manuals
-│   ├── ros2_node_creation/        — Guidelines for Clean-arch compliant nodes
-│   ├── ros2_lifecycle/            — Managed lifecycle nodes template
-│   ├── ros2_messaging/            — Robust publisher & subscriber patterns
-│   ├── ros2_service_action/       — Service and Action server wrappers
-│   ├── ros2_launch_config/        — Modular launch recipes
-│   ├── ros2_transforms/           — TF2 management avoiding leaky domain dependencies
-│   ├── ros2_diagnostics/          — Health monitoring & diagnostic updaters
-│   ├── ros2_bag/                  — Rosbag2 record and playback configurations
-│   ├── ros2_testing/              — GTest, pytest, and launch_testing integration
-│   ├── new_ros2_package/          — Base template for package creation
-│   ├── new_nav2_plugin/           — Base template for Nav 2 plugins
-│   ├── nav2_core_interfaces/      — Plugin base class definitions
-│   ├── nav2_controllers/          — DWB, MPPI, RPP controller guides
-│   ├── nav2_planners/             — NavFn, SMAC, Theta* planners
-│   ├── nav2_behavior_tree/        — Nav 2 BT node implementations
-│   ├── nav2_costmap/              — Costmap layer filters and guides
-│   ├── nav2_localization/         — AMCL and Map Server setups
-│   ├── nav2_servers/              — Lifecycle, Velocity, Collision monitor servers
-│   ├── gz-build/                  — cmake, ninja, bazel simulation build guides
-│   ├── gz-test/                   — Headless ctest, gtest, xvfb automation
-│   ├── gz-ecs-overview/           — Entity-Component-System simulation loops
-│   ├── new-component/             — Custom component header templates
-│   └── new-system/                — Complete Gazebo system plugin layouts
-├── rules/               # Architectural & developmental constraints
-│   ├── clean_architecture.md      — Boundaries between domain, application, infra, and presentation
-│   ├── ros2_general.md            — Workspace-wide ROS 2 style & project setup
-│   ├── ros2_nodes.md              — Execution models, callbacks, parameters
-│   ├── ros2_communication.md      — Topics, QoS profiles, custom messages
-│   ├── testing.md                 — Coverage and integration test plans
-│   ├── nav2_architecture.md       — Navigation 2 pipeline diagrams
-│   ├── nav2_parameters.md         — Nav 2 tuning parameter configurations
-│   ├── nav2_msgs_reference.md     — Nav 2 standard message schemas
-│   └── robot_specific.md          — Project-specific overrides (override as needed)
-└── agents/              # Sub-agent personas
-    ├── ros2-style-reviewer.md     — Automated PR review bot for ROS 2 standards
-    ├── clean-arch-architect.md    — Design consultant for layers and node structures
-    ├── gz-style-reviewer.md       — Automated PR reviewer for Gazebo Sim conventions
-    └── ecs-architect.md           — Design consultant for Gazebo Sim ECS data flows
+│   ├── test.md              — /test            colcon test + result
+│   ├── lint.md              — /lint            ament_* + pre-commit
+│   ├── new-package.md       — /new-package     ROS 2 package scaffold
+│   ├── new-node.md          — /new-node        Node scaffold
+│   ├── new-launch.md        — /new-launch      Launch file scaffold
+│   ├── new-nav2-plugin.md   — /new-nav2-plugin Nav 2 plugin scaffold
+│   ├── changelog.md         — /changelog       CHANGELOG.rst for the branch
+│   ├── ros2.md              —                  ROS 2 reference card
+│   ├── nav2.md              —                  Nav 2 reference card
+│   │  ── gz-sim / Gazebo side ──
+│   ├── gz-build.md          — /gz-build        cmake + ninja gz-sim build
+│   ├── gz-test.md           — /gz-test         ctest / integration tests
+│   ├── gz-lint.md           — /gz-lint         pre-commit (gz-sim)
+│   ├── gz-new-component.md  — /gz-new-component ECS component scaffold
+│   ├── gz-new-system.md     — /gz-new-system   ECS system plugin scaffold
+│   └── gz-changelog.md      — /gz-changelog    gz-sim Changelog.md block
+├── skills/              # long-form recipes Claude consults
+│   │  ── ROS 2 ──
+│   ├── ros2_node_creation/        — Clean-arch compliant node
+│   ├── ros2_lifecycle/            — Managed lifecycle node
+│   ├── ros2_messaging/            — Pub / Sub patterns
+│   ├── ros2_service_action/       — Service & Action wrapping
+│   ├── ros2_launch_config/        — Modular launch
+│   ├── ros2_transforms/           — TF2 management
+│   ├── ros2_diagnostics/          — Health monitoring
+│   ├── ros2_bag/                  — Rosbag record/replay
+│   ├── ros2_testing/              — GTest / pytest / launch_testing
+│   ├── new_ros2_package/          — Package scaffold recipe
+│   │  ── Nav 2 ──
+│   ├── new_nav2_plugin/           — Nav 2 plugin scaffold recipe
+│   ├── nav2_core_interfaces/      — Plugin base classes
+│   ├── nav2_controllers/          — DWB / MPPI / RPP …
+│   ├── nav2_planners/             — NavFn / SMAC / Theta* …
+│   ├── nav2_behavior_tree/        — BT nodes
+│   ├── nav2_costmap/              — Costmap layers
+│   ├── nav2_localization/         — AMCL / Map Server
+│   ├── nav2_servers/              — Lifecycle / Velocity / Collision …
+│   │  ── gz-sim / Gazebo ──
+│   ├── gz-build/                  — cmake / ninja / colcon / bazel recipes
+│   ├── gz-test/                   — ctest filters, gtest, headless
+│   ├── gz-ecs-overview/           — Entity-Component-System architecture
+│   ├── new-component/             — Component header templates
+│   └── new-system/                — Full system plugin scaffold
+├── rules/               # rules to follow in the project
+│   ├── clean_architecture.md      — Layer boundaries
+│   ├── ros2_general.md            — General ROS 2 principles
+│   ├── ros2_nodes.md              — Node development rules
+│   ├── ros2_communication.md      — Topic / QoS / interface rules
+│   ├── testing.md                 — Test strategy
+│   ├── nav2_architecture.md       — Nav 2 system architecture
+│   ├── nav2_parameters.md         — Nav 2 parameter reference
+│   ├── nav2_msgs_reference.md     — Nav 2 msg/srv/action list
+│   ├── ros2_control_architecture.md — ros2_control framework & lifecycle
+│   ├── ros2_controllers_reference.md — ros2_controllers package catalog
+│   ├── ros2_control_demos.md      — ros2_control_demos example catalog (17)
+│   ├── behaviortree_cpp.md        — BehaviorTree.CPP v4 core reference
+│   ├── behaviortree_ros2.md       — BehaviorTree.ROS2 wrappers + execution server
+│   ├── vda5050_protocol.md        — VDA 5050 v3.0.0 fleet interface overview
+│   ├── vda5050_messages.md        — VDA 5050 v3.0.0 complete message spec + processes
+│   ├── vda5050_implementation_formats.md — VDA 5050 code-gen format analysis (3 reference idioms)
+│   └── robot_specific.md          — Robot-specific settings (override these)
+└── agents/              # custom sub-agent definitions
+    │  ── ROS 2 / Nav 2 ──
+    ├── ros2-style-reviewer.md     — ROS 2 / Clean-arch PR review expert
+    ├── clean-arch-architect.md    — Layer / dependency design advisor
+    ├── ros2-controllers-reviewer.md — ros2_control controller PR reviewer
+    ├── behaviortree-reviewer.md   — BehaviorTree.CPP / ROS2 PR reviewer
+    │  ── gz-sim / Gazebo ──
+    ├── gz-style-reviewer.md       — gz-sim style / PR review expert
+    ├── ecs-architect.md           — ECS design advisor
+    │  ── VDA 5050 fleet interface ──
+    └── vda5050-reviewer.md        — VDA 5050 protocol-compliance PR reviewer
 ```
 
----
+## How to use
 
-## Interacting with the Configuration
+### Slash commands
+Invoked directly from the terminal:
 
-### Custom Commands & Workflows
-Execute directly from your agent's interactive terminal session:
-```bash
+```
+# Start from zero
+/new-workspace ~/my_robot_ws acme   # bootstrap a complete colcon workspace
+
 # ROS 2 / Nav 2
-/build                    # Build the entire workspace
-/build my_pkg             # Build a specific package only
-/test                     # Run colcon test and print a clean summary
-/lint --all               # Run linters over the entire repository
-/new-package my_pkg python # Scaffold a python package
-/new-node my_pkg my_node lifecycle cpp # Scaffold a C++ lifecycle node
-/new-nav2-plugin controller MyController # Scaffold a controller plugin
-/changelog                # Generate CHANGELOG.rst block
+/build                    # whole workspace (colcon)
+/build my_pkg             # a single package only
+/test                     # colcon test + result
+/lint --all               # all files
+/new-package my_pkg python
+/new-node my_pkg my_node lifecycle cpp
+/new-nav2-plugin controller MyController
+/new-controller my_pkg MyController chainable
+/new-hardware my_pkg MyRobotHardware system
+/new-bt-node my_pkg MyAction ros-action
+/new-vda5050-connector my_connector python robot
+/changelog
+
+# Extend this template itself (self-extensible)
+/new-skill   my_topic_helper
+/new-command new-my-thing
+/new-agent   my-domain-reviewer
 
 # gz-sim / Gazebo
-/gz-build                 # Build the Gazebo sim module using cmake & ninja
-/gz-test                  # Run Gazebo simulation ctests
-/gz-lint                  # Run Gazebo pre-commit linters
-/gz-new-component Foo     # Scaffold an ECS Component
-/gz-new-system bar BarSys # Scaffold an ECS System plugin
-/gz-changelog             # Generate Gazebo Changelog.md block
+/gz-build                 # cmake -B build && ninja
+/gz-test                  # ctest --test-dir build
+/gz-lint                  # pre-commit (gz-sim)
+/gz-new-component Foo
+/gz-new-system fancy_drive FancyDrive
+/gz-changelog
 ```
 
-### Agent Skills
-Agents automatically search `.agents/skills/` or `.claude/skills/` when executing tasks. You can instruct the agent to use a specific manual:
-> "Implement a lifecycle node following the guidelines in skills/ros2_lifecycle/SKILL.md."
+### Skills
+When Claude takes on a task it automatically consults the relevant
+`SKILL.md`. To run a skill explicitly, you can give the file path
+directly:
 
-### Specialized Sub-agents
-Dispatch sub-agents to parallelize tasks using the agent execution model:
-*   `clean-arch-architect`: Consults on where logic belongs, layer boundaries, and ROS dependencies.
-*   `ros2-style-reviewer`: Performs rigorous review on your branch diffs prior to opening a PR.
-*   `ecs-architect`: Consults on component data layouts, system update phases, and Gazebo thread safety.
-*   `gz-style-reviewer`: Validates system plugin registration and Bazel/CMake consistency for Gazebo code.
+```
+apply all the steps in .claude/skills/ros2_lifecycle/SKILL.md
+```
 
----
+### Sub-agents
+Invoked through the `Agent` tool:
 
-## Core Development Philosophy
+ROS 2 / Nav 2 side:
+* `subagent_type: "ros2-style-reviewer"` — strictly audits the diff
+  for clean-arch and ROS 2 rule compliance, gives line-anchored
+  feedback.
+* `subagent_type: "clean-arch-architect"` — produces optioned
+  recommendations on which layer a new feature should live in and how.
 
-1.  **Strict Dependency Inversion**: The `domain/` layer is pure business logic and must never import `rclpy`, `rclcpp`, or any ROS/Gazebo message definitions.
-2.  **Recipes Over Ad-hoc Coding**: Consult `skills/` and `rules/` before writing code to maintain unified codebase architecture.
-3.  **Explicit Tooling**: Prefer explicit command wrappers over hidden automation hooks for transparent builds, tests, and linting.
-4.  **Single Source of Truth**: Link related files rather than duplicating content across manuals.
-5.  **User-specific Overrides**: Create `.claude/settings.local.json` or `.agents/settings.local.json` for personal environment keys and preferences (pre-configured in `.gitignore` to prevent committing secrets).
+gz-sim / Gazebo side:
+* `subagent_type: "gz-style-reviewer"` — audits gz-sim style, plugin
+  registration, and CMake/Bazel consistency.
+* `subagent_type: "ecs-architect"` — produces optioned recommendations
+  on which Component new state/behaviour belongs to or which System
+  phase it belongs in.
+
+### Personal overrides
+
+For personal permission/env settings you don't want to commit to the
+repo, create a `.claude/settings.local.json` file (it has been added to
+.gitignore automatically).
+
+## When adding new content
+
+* A new skill: `.claude/skills/<kebab_or_snake>/SKILL.md` —
+  `name` and `description` in the frontmatter are **required**.
+* A new slash command: `.claude/commands/<name>.md` —
+  `description` in the frontmatter, optional `argument-hint` and
+  `allowed-tools`. Parameters are taken via `$ARGUMENTS` in the body.
+* A new sub-agent: `.claude/agents/<name>.md` — `name`,
+  `description`, optional `tools` and `model`.
+* Update the index in this README with every addition.
+
+## Philosophy
+
+1. **Invert the dependency.** `domain/` does not know about ROS 2; the
+   ROS 2 context stays in the `infrastructure/` layer.
+2. **Recipe first, code second.** Commands are small helpers; thanks to
+   skills and rules the code Claude produces is consistent.
+3. **Explicit commands > magical automatic behaviour.** Automatic
+   behaviours are expressed via `settings.json` hooks; we don't produce
+   hidden side effects.
+4. **Single source.** Every piece of information lives in one place;
+   instead of duplication, link with the `[[rule_file]]` format.
