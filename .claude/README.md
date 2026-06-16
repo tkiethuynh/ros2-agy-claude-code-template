@@ -88,7 +88,12 @@ and use it directly.
 │   ├── vda5050_messages.md        — VDA 5050 v3.0.0 complete message spec + processes
 │   ├── vda5050_implementation_formats.md — VDA 5050 code-gen format analysis (3 reference idioms)
 │   └── robot_specific.md          — Robot-specific settings (override these)
+├── specs/               # SDD spec files (BR, UC, Entity Model, AC) — written by orchestrator
 └── agents/              # custom sub-agent definitions
+    │  ── SDD pipeline ──
+    ├── orchestrator.md            — Spec writer + GitHub issue lifecycle + pipeline coordinator
+    ├── coder.md                   — Clean Architecture implementer + domain unit tests
+    ├── reviewer.md                — Independent integration tester + colcon build/test + punch list
     │  ── ROS 2 / Nav 2 ──
     ├── ros2-style-reviewer.md     — ROS 2 / Clean-arch PR review expert
     ├── clean-arch-architect.md    — Layer / dependency design advisor

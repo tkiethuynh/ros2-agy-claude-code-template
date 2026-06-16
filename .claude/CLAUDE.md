@@ -100,6 +100,16 @@ executables — read them when you need the cheatsheet.
 
 ## Sub-agents
 
+### SDD pipeline (start here for any new feature)
+
+| Agent | When to use |
+|-------|-------------|
+| `orchestrator` | Start here — writes spec (BR + UC + Entity Model + AC), creates GitHub issues, coordinates coder and reviewer, signs off when all AC = PASS. |
+| `coder` | Implements Clean Architecture layers + domain unit tests (named `test_AC<N>_...`) scoped by orchestrator's spec. Opens PR only after reviewer sign-off. |
+| `reviewer` | Reads AC only (not implementation), writes integration/launch tests independently, runs `colcon build + test`, returns punch list anchored to AC IDs. |
+
+### Specialist reviewers & advisors
+
 | Agent | When to use |
 |-------|-------------|
 | `ros2-style-reviewer` | Before opening a ROS 2 PR — Clean Architecture, lifecycle, QoS, pluginlib, tests, build manifests. |
