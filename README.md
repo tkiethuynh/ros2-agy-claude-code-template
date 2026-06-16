@@ -59,6 +59,7 @@ A library of "Skills" (`skills/` under `.claude/` or `.agents/`) provides ready-
 - **ros2_control** — controller and hardware interface components
 - **Behavior Trees** — BehaviorTree.CPP v4 core and BehaviorTree.ROS2 node integration
 - **Fleet Interface** — VDA 5050 v3.0.0 connector implementation
+- **Issue Management** — GitHub / GitLab issue creation from an SDD spec (BR → milestone, UC → issue, AC → checkboxes)
 - **Self-Extensibility** — Extending this configuration with custom skills, commands, rules, and agents
 
 ### 5. Slash Commands / Workflows

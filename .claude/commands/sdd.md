@@ -108,29 +108,25 @@ While writing the Entity Model and AC, **flag immediately** if:
 - A UC mixes business logic with transport — split into a domain use case
   + an infrastructure adapter.
 
-## Step 2 — Create issues (concrete, with a fallback)
+## Step 2 — Create issues (skill `issue_management`)
 
-If the repo has a GitHub remote and `gh` is authenticated
-(`gh auth status` succeeds), create tracking issues:
+Create tracking issues in the project's house format — see the
+**`issue_management`** skill for the platform recipes and the shared body in
+`.gitlab/issue_templates/Feature.md`. The SDD → tracker mapping:
 
-```bash
-gh issue create --title "Epic: <BR goal>" --label epic --body "<BR content>"
-gh issue create --title "UC-<ID>: <UC name>" --label feature --body "$(cat <<'EOF'
-## Use Case
-<UC summary>
+- **BR** → a **milestone** (the phase).
+- **each UC** → one **issue**, title `UC-<ID>: <name>`, body = the house
+  format with the UC's **AC items as the Acceptance Criteria checkboxes**
+  (`- [ ] AC-1: …`), UC ordering under **Dependencies**, and the spec file
+  under **Resources**.
 
-## Acceptance Criteria
-- [ ] AC-1: <summary>
-- [ ] AC-2: <summary>
+Detect the host: GitHub remote → `gh`; GitLab remote → `glab` or the REST API
+with `$GITLAB_TOKEN` (never hardcode a token). Be idempotent — skip a UC whose
+issue already exists.
 
-Spec: .claude/specs/<UC-ID>-<slug>.md
-EOF
-)"
-```
-
-If there is no GitHub remote or `gh` is unavailable, **do not fabricate
-issue numbers** — track the AC checklist inline in the spec's `## History`
-and report that issues were skipped. (`git push` / `gh` may prompt for
+If there is no tracker or it is unreachable, **do not fabricate issue
+numbers** — track the AC checklist inline in the spec's `## History` and
+report that issues were skipped. (`git push` / `gh` / `glab` may prompt for
 permission; that is expected.)
 
 ## Step 3 — Spawn the coder
