@@ -68,6 +68,7 @@ For C++ the same separation lives under `include/<pkg>/<layer>/` and
 | Generate VDA 5050 code (which format?) | `rules/vda5050_implementation_formats.md` (pydantic / ROS msg / C++ idioms + v2→v3 diffs) |
 | Design something — which layer?       | Agent `clean-arch-architect` |
 | Review a diff before PR               | Agent `ros2-style-reviewer` |
+| Create issues from a spec (GitHub/GitLab) | `skills/issue_management/SKILL.md` + `commands/sdd.md` (Step 2) + `.gitlab/issue_templates/Feature.md` |
 | Add a new command / skill / agent / rule | `skills/extending_claude_config/SKILL.md` + `/new-command` `/new-skill` `/new-agent` |
 
 ## Slash commands
@@ -184,6 +185,12 @@ workers via the Agent tool and loops on the punch list:
 | `gz-ecs-overview`  | The Server / SimulationRunner / ECM / System loop in 5 minutes |
 | `new-component`    | Component header template (with or without custom serializer) |
 | `new-system`       | Full system plugin scaffold — header, source, CMake, plugin registration, integration test |
+
+### SDD / issue tracking
+
+| Skill              | Topic |
+|--------------------|-------|
+| `issue_management` | Create well-formed GitHub (`gh`) / GitLab (`glab` / API) issues from a spec — BR → milestone, UC → issue, AC → checkboxes; house format in `.gitlab/issue_templates/` |
 
 ### Meta — extending this template
 

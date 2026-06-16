@@ -65,6 +65,8 @@ and use it directly.
 │   ├── nav2_costmap/              — Costmap layers
 │   ├── nav2_localization/         — AMCL / Map Server
 │   ├── nav2_servers/              — Lifecycle / Velocity / Collision …
+│   │  ── project workflow ──
+│   ├── issue_management/          — GitHub / GitLab issues from a spec
 │   │  ── gz-sim / Gazebo ──
 │   ├── gz-build/                  — cmake / ninja / colcon / bazel recipes
 │   ├── gz-test/                   — ctest filters, gtest, headless
