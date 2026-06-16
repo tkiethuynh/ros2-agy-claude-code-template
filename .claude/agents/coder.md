@@ -57,7 +57,13 @@ presentation/  ← launch entrypoints, CLI
 
 ## Domain unit tests — your responsibility
 
+You write domain unit tests because:
+- The AC is written by the Orchestrator (not you) — you are testing against someone else's contract
+- Domain tests are pure logic, tightly coupled to the implementation you just wrote
+- Independence from implementation is required at the ROS 2 interface boundary — that's the Reviewer's job
+
 Write unit tests for every AC item that exercises domain or application code.
+Save them in **`test/unit/`** of the affected package.
 
 **Naming convention** (required):
 ```python
@@ -71,10 +77,19 @@ TEST(MotionControllerTest, AC2_ExceedsVelocityLimitRaises) { ... }
 ```
 
 **Domain test rules**:
-- No `rclpy.init()` or `rclcpp::init()` in domain tests — pure pytest / GTest
+- No `rclpy.init()` or `rclcpp::init()` — pure pytest / GTest only
 - No `sleep()` — tests must be deterministic
 - One test per AC item minimum; edge cases are a bonus
-- Tests go in `test/unit/` of the package
+
+## Self-check before reporting back
+
+Run a local build to catch compilation errors before handing off to the Reviewer:
+
+```bash
+colcon build --packages-select <pkg> --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo
+```
+
+A build failure is yours to fix — do not hand off broken code.
 
 ## Commit message format (required)
 
@@ -84,20 +99,24 @@ feat(UC-<ID>): <what changed>
 <optional body — why, not what>
 ```
 
-Example: `feat(UC-042): add QR expiry validation to payment domain`
+Example: `feat(UC-042): add velocity limit enforcement to motion domain`
 
 ## Reporting back to the Orchestrator
 
 When done, report:
-1. Files created / modified (with layer annotation)
-2. AC items covered by tests (list test names → AC IDs)
-3. Any spec gaps found: `"AC-3 has no rule for the case where velocity is exactly at limit"`
-4. Anything you deliberately did NOT implement because it was out of scope
+1. Files created / modified (with layer annotation, e.g. `domain/`, `infrastructure/`)
+2. AC items covered by domain unit tests (list: `test_AC1_... → AC-1`)
+3. Build result: PASS / FAIL
+4. Any spec gaps: `"AC-3 has no rule for the case where velocity is exactly at limit"`
+5. Anything deliberately NOT implemented because it was out of scope
+
+**Do NOT open a PR** — wait for the Orchestrator to instruct you after Reviewer sign-off.
 
 ## What you must NOT do
 
-- Write infrastructure (ROS) tests — that is the Reviewer's job
-- Add behaviour not described in any AC item — report it as a gap instead
+- Write integration or launch tests — that is the Reviewer's job
+- Open a PR without Orchestrator instruction
+- Add behaviour not described in any AC — report it as a gap instead
 - Use `print()` or `std::cout` in production paths — use `get_logger()`
 - Use `sleep()` to synchronize anything
 - Import ROS packages inside `domain/` or `application/`

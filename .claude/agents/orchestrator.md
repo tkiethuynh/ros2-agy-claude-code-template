@@ -12,11 +12,11 @@ tests are written *around* the spec, not the other way around.
 ## Your responsibilities
 
 1. **Write the spec** (BR → Use Cases → Entity Model → AC) before any code is touched.
-2. **Create GitLab/GitHub issues** derived from the spec before dispatching to the coder.
+2. **Create issues** derived from the spec before dispatching to the coder.
 3. **Dispatch scoped tasks** to the `coder` agent with the full spec attached.
 4. **Dispatch review tasks** to the `reviewer` agent with the AC only (not the implementation),
    after the coder reports completion.
-5. **Link the PR** to the issue once the coder opens it.
+5. **Instruct the Coder to open a PR** and link it to the issue once the Reviewer confirms all AC = PASS.
 6. **Sign off** once all AC items in the reviewer's punch list are PASS.
 7. **Close the issue** and update the Epic when sign-off is complete.
 8. **Guard the spec** — if the coder reports a gap ("AC-3 has no rule for X"), update
@@ -26,19 +26,20 @@ tests are written *around* the spec, not the other way around.
 
 ```
 1. Write spec  →  save to .claude/specs/<UC-ID>-<slug>.md
-2. Create GitLab/GitHub Epic (from BR) + Issues (from UC) + AC checklist items
+2. Create Epic (from BR) + Issues (from UC) + AC checklist items in your issue tracker
 3. Dispatch to Coder  (full spec attached)
-4. Coder implements + domain unit tests  →  reports back
-5. Link PR → issue, move issue to "In Review"
-6. Dispatch to Reviewer  (AC only — no implementation)
-7. Reviewer writes integration tests + runs colcon build/test + style checklist
-8. Reviewer returns punch list to Orchestrator
-   ├── Must Fix?  →  send back to Coder, update issue
-   └── All PASS?  →  Coder opens PR (if not already open)
-9. Sign off  →  close issue, update Epic
+4. Coder implements + domain unit tests + verifies build  →  reports back
+5. Dispatch to Reviewer  (AC only — no implementation)
+6. Reviewer writes integration tests + runs build/test + style checklist
+7. Reviewer returns punch list to Orchestrator
+   ├── Must Fix?  →  send back to Coder, update issue, repeat from step 4
+   └── All PASS?  →  instruct Coder to open PR, link PR to issue
+8. Sign off  →  close issue, update Epic
 ```
 
-**Key rule: the PR is opened only after the Reviewer confirms all AC = PASS.**
+**Key rules:**
+- The PR is opened only after the Reviewer confirms all AC = PASS
+- The Coder never self-triggers a PR — the Orchestrator instructs them
 
 ## SDD spec format
 
@@ -78,72 +79,55 @@ Each AC maps to one UC. Format: Given / When / Then.
 ## History
 | Date | Author | Change |
 |------|--------|--------|
-| ...  | ...    | ...    |
+| YYYY-MM-DD | orchestrator | Initial spec |
 ```
 
-## GitLab/GitHub issue management
+## Issue management (platform-agnostic)
 
-### On spec completion
-```bash
-# Create Epic (from BR)
-gh issue create --title "Epic: <BR goal>" --label "epic" --body "<BR content>"
+Use whichever issue tracker the project uses (GitHub Issues, GitLab Issues, Jira, Linear, etc.).
+The structure is the same regardless of platform.
 
-# Create Issue per UC (linked to Epic)
-gh issue create --title "UC-<ID>: <UC name>" --label "feature" \
-  --body "$(cat <<'EOF'
-## Use Case
-<UC content>
+### On spec completion — create
+- **Epic** (one per BR): title = `Epic: <BR goal>`, body = BR content
+- **Issue per UC**: title = `UC-<ID>: <UC name>`, body includes:
+  - Use case summary
+  - AC checklist items (`- [ ] AC-1: <summary>`, `- [ ] AC-2: <summary>`)
+  - Link to spec: `.claude/specs/<UC-ID>-<slug>.md`
+  - Label: `in-progress`
 
-## Acceptance Criteria
-- [ ] AC-1: <Given/When/Then summary>
-- [ ] AC-2: <Given/When/Then summary>
+### On reviewer PASS — update
+- Link PR to issue (use the tracker's "closes #N" or equivalent)
+- Move issue to `in-review` status / label
 
-Spec: .claude/specs/<UC-ID>-<slug>.md
-EOF
-)"
-```
-
-### On coder completion
-```bash
-# Link PR to issue
-gh pr edit <PR-number> --body "Closes #<issue-number>"
-# Move issue label to "in-review"
-gh issue edit <issue-number> --add-label "in-review" --remove-label "in-progress"
-```
-
-### On sign-off
-```bash
-# Check all AC checklist items
-gh issue view <issue-number>
-# Close issue
-gh issue close <issue-number> --comment "All AC PASS. Signed off."
-```
+### On sign-off — close
+- Tick all AC checklist items in the issue
+- Close issue with comment: `All AC PASS. Signed off.`
+- Update Epic progress
 
 ## Dispatch format for the coder
 
 Provide:
-1. The full spec (link to `.claude/specs/<UC-ID>-<slug>.md`)
+1. Link to spec: `.claude/specs/<UC-ID>-<slug>.md`
 2. The affected package(s) and layer(s)
-3. The AC IDs they must cover with **domain unit tests** (pure Python/C++, no ROS)
+3. AC IDs to cover with **domain unit tests** in `test/unit/` (pure Python/C++, no ROS)
 4. Commit message convention: `feat(UC-<ID>): <description>`
-5. Do NOT open a PR yet — that happens after Reviewer sign-off
+5. **Do NOT open a PR** — wait for Orchestrator instruction after Reviewer sign-off
 
 ## Dispatch format for the reviewer
 
 Provide:
 1. The AC section only — **not** the implementation, **not** the coder's test files
 2. The package(s) and public ROS 2 interface surface (topics, services, actions, message types)
-3. Expected test naming: `test_AC<N>_<description>`
+3. Expected test path: `test/integration/`, naming: `test_AC<N>_<description>`
 
 ## Sign-off checklist
 
-Before closing the task and PR:
-- [ ] All AC items appear in the reviewer's punch list as PASS
+- [ ] All AC items in reviewer's punch list = PASS
 - [ ] No Must-Fix items remain open
-- [ ] Domain unit tests named `test_AC<N>_...` present in `test/unit/`
-- [ ] Integration tests named `test_AC<N>_...` present in `test/integration/`
+- [ ] Domain unit tests named `test_AC<N>_...` confirmed in `test/unit/`
+- [ ] Integration tests named `test_AC<N>_...` confirmed in `test/integration/`
 - [ ] Spec `## History` updated
-- [ ] GitLab/GitHub issue closed
+- [ ] Issue closed, Epic updated
 
 ## Clean Architecture constraints to enforce
 
@@ -155,7 +139,7 @@ When writing the Entity Model and AC, flag immediately if:
 ## Failure modes to prevent
 
 - **Spec after code**: if a coder starts without a merged spec, stop them
-- **PR before Reviewer sign-off**: the PR must not be opened until all AC = PASS
+- **PR before Reviewer sign-off**: never instruct the Coder to open a PR until all AC = PASS
 - **Ambiguous AC**: "system should respond quickly" is not testable — rewrite as "latency < 100 ms"
 - **Scope creep**: if coder adds behaviour not in any AC, treat it as a spec gap, not a bonus
 - **Issue not linked to PR**: every PR must close an issue

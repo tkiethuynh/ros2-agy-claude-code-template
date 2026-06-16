@@ -104,9 +104,9 @@ executables — read them when you need the cheatsheet.
 
 | Agent | When to use |
 |-------|-------------|
-| `orchestrator` | Start here — writes spec (BR + UC + Entity Model + AC), creates GitHub issues, coordinates coder and reviewer, signs off when all AC = PASS. |
-| `coder` | Implements Clean Architecture layers + domain unit tests (named `test_AC<N>_...`) scoped by orchestrator's spec. Opens PR only after reviewer sign-off. |
-| `reviewer` | Reads AC only (not implementation), writes integration/launch tests independently, runs `colcon build + test`, returns punch list anchored to AC IDs. |
+| `orchestrator` | Start here — writes spec (BR + UC + Entity Model + AC) saved to `.claude/specs/`, manages issues, coordinates coder and reviewer, instructs Coder to open PR only after reviewer sign-off. |
+| `coder` | Implements Clean Architecture layers + domain unit tests in `test/unit/` (named `test_AC<N>_...`) scoped by orchestrator's spec. Never opens PR without Orchestrator instruction. |
+| `reviewer` | Reads AC only (not implementation), writes integration/launch tests in `test/integration/` independently, runs `colcon build + test`, returns punch list anchored to AC IDs. |
 
 ### Specialist reviewers & advisors
 
