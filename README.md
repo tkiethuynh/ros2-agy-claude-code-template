@@ -67,6 +67,7 @@ Executable workflow commands / custom slash commands (under `.claude/commands/` 
 
 | Command                                | Purpose                                       |
 | -------------------------------------- | --------------------------------------------- |
+| `/sdd <description>`                   | Spec-Driven Development pipeline (lead agent): spec → `coder` → `reviewer` → PR. Start here for a feature. |
 | `/build [pkg]`                         | `colcon build` wrapper (symlink, RelWithDebInfo). |
 | `/test [pkg] [filter]`                 | `colcon test` + result summary.               |
 | `/lint [--all\|files]`                 | `pre-commit` + ament linters.                 |
@@ -93,6 +94,10 @@ Executable workflow commands / custom slash commands (under `.claude/commands/` 
 ### 6. Sub-agents
 
 Specialized sub-agents (under `.claude/agents/` or `.agents/agents/`):
+
+Spec-Driven Development pipeline (orchestrated by the **`/sdd`** command on the main thread — a sub-agent cannot spawn other sub-agents, so the lead agent coordinates these workers):
+- **`coder`** — implements the Clean Architecture layers and the domain unit tests (`test/unit/`, named `test_AC<N>_...`) for the spec it is handed; reports back, never opens a PR.
+- **`reviewer`** — receives the acceptance criteria only, writes integration/launch tests (`test/integration/`) independently, runs `colcon build + test`, and returns a punch list anchored to AC IDs.
 
 ROS 2 / Nav 2:
 - **`ros2-style-reviewer`** — strict PR review against Clean Architecture, lifecycle, QoS, pluginlib, tests, build manifests. Returns a file:line punch list.

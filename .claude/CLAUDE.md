@@ -74,6 +74,7 @@ For C++ the same separation lives under `include/<pkg>/<layer>/` and
 
 | Command | Purpose |
 |---------|---------|
+| `/sdd <description>`      | Run the Spec-Driven Development pipeline as lead agent — write the spec, spawn `coder` + `reviewer` sub-agents, loop on the punch list, open the PR only after all AC = PASS. **Start here for a new feature.** |
 | `/build [pkg]`            | `colcon build` wrapper, `--symlink-install`, `RelWithDebInfo`. |
 | `/test [pkg] [filter]`    | `colcon test` + `test-result --all` with a clean summary. |
 | `/lint [--all|files]`     | `pre-commit` + ament linters on changed files. |
@@ -102,11 +103,15 @@ executables — read them when you need the cheatsheet.
 
 ### SDD pipeline (start here for any new feature)
 
+Orchestration lives in the **`/sdd` slash command**, run by the lead
+(main-thread) agent — *not* in a sub-agent, because a sub-agent cannot
+spawn other sub-agents. `/sdd` writes the spec, then spawns these two
+workers via the Agent tool and loops on the punch list:
+
 | Agent | When to use |
 |-------|-------------|
-| `orchestrator` | Start here — writes spec (BR + UC + Entity Model + AC) saved to `.claude/specs/`, manages issues, coordinates coder and reviewer, instructs Coder to open PR only after reviewer sign-off. |
-| `coder` | Implements Clean Architecture layers + domain unit tests in `test/unit/` (named `test_AC<N>_...`) scoped by orchestrator's spec. Never opens PR without Orchestrator instruction. |
-| `reviewer` | Reads AC only (not implementation), writes integration/launch tests in `test/integration/` independently, runs `colcon build + test`, returns punch list anchored to AC IDs. |
+| `coder` | Spawned by `/sdd`. Implements Clean Architecture layers + domain unit tests in `test/unit/` (named `test_AC<N>_...`) scoped by the spec. Reports back; never opens a PR. |
+| `reviewer` | Spawned by `/sdd` with the **AC only** (not the implementation). Writes integration/launch tests in `test/integration/` independently, runs `colcon build + test`, returns a punch list anchored to AC IDs. |
 
 ### Specialist reviewers & advisors
 

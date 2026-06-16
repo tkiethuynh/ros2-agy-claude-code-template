@@ -26,6 +26,7 @@ and use it directly.
 ├── settings.json        # permissions / hooks / env variables
 ├── commands/            # /slash commands (invoked from the terminal)
 │   │  ── ROS 2 / Nav 2 side ──
+│   ├── sdd.md               — /sdd             SDD pipeline (spec → coder → reviewer → PR)
 │   ├── build.md             — /build           colcon build wrapper
 │   ├── test.md              — /test            colcon test + result
 │   ├── lint.md              — /lint            ament_* + pre-commit
@@ -88,10 +89,9 @@ and use it directly.
 │   ├── vda5050_messages.md        — VDA 5050 v3.0.0 complete message spec + processes
 │   ├── vda5050_implementation_formats.md — VDA 5050 code-gen format analysis (3 reference idioms)
 │   └── robot_specific.md          — Robot-specific settings (override these)
-├── specs/               # SDD spec files (BR, UC, Entity Model, AC) — written by orchestrator
+├── specs/               # SDD spec files (BR, UC, Entity Model, AC) — written by /sdd
 └── agents/              # custom sub-agent definitions
-    │  ── SDD pipeline ──
-    ├── orchestrator.md            — Spec writer + GitHub issue lifecycle + pipeline coordinator
+    │  ── SDD pipeline workers (orchestrated by /sdd, not by an agent) ──
     ├── coder.md                   — Clean Architecture implementer + domain unit tests
     ├── reviewer.md                — Independent integration tester + colcon build/test + punch list
     │  ── ROS 2 / Nav 2 ──
@@ -114,6 +114,9 @@ Invoked directly from the terminal:
 ```
 # Start from zero
 /new-workspace ~/my_robot_ws acme   # bootstrap a complete colcon workspace
+
+# Deliver a feature end-to-end (Spec-Driven Development)
+/sdd add a battery-low return-to-dock behaviour   # spec → coder → reviewer → PR
 
 # ROS 2 / Nav 2
 /build                    # whole workspace (colcon)
