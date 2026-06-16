@@ -9,11 +9,13 @@ Clean Architecture project. The spec is the single source of truth: code
 and tests are written *around* the spec, not the other way around.
 
 **You are the orchestrator, and you run in the main thread.** This is a
-slash command, not a sub-agent, on purpose: in Claude Code a sub-agent
-cannot spawn other sub-agents, so the only place that can coordinate the
-`coder` and `reviewer` workers is the lead agent — you. You spawn them
-with the **Agent tool** (`subagent_type: coder` / `subagent_type:
-reviewer`) and hold the state of the loop between rounds.
+slash command (a workflow), not a sub-agent, on purpose: in Claude Code a
+sub-agent cannot spawn other sub-agents, so orchestration must live at the
+top level — which is also the portable choice, since AGY loads workflows
+but does not auto-load static sub-agent files. The only place that can
+coordinate the `coder` and `reviewer` workers is the lead agent — you. You
+spawn the two workers (see **Spawning the workers** below) and hold the
+state of the loop between rounds.
 
 `$ARGUMENTS` is the feature, bug, or enhancement to deliver. If it is
 empty or too vague to write acceptance criteria from, ask one clarifying
@@ -37,9 +39,24 @@ question before writing the spec.
 - The PR is opened **only after** the reviewer confirms every AC = PASS.
 - The reviewer receives the **AC only** — never the implementation or the
   coder's tests. Its independence is the whole point.
-- Sub-agents are **stateless**: each `Agent` call starts cold. On every
-  spawn you must pass the full context that worker needs (see payloads
-  below) — including, on a re-spawn, the punch list from the last round.
+- Sub-agents are **stateless**: each spawn starts cold. On every spawn you
+  must pass the full context that worker needs (see payloads below) —
+  including, on a re-spawn, the punch list from the last round.
+
+## Spawning the workers (portable)
+
+The `coder` and `reviewer` prompts in `agents/coder.md` and
+`agents/reviewer.md` are the single source of truth on either host:
+
+- **Claude Code** — they are registered sub-agents. Spawn with the Agent
+  tool (`subagent_type: coder` / `subagent_type: reviewer`).
+- **AGY / Antigravity** — static sub-agent files are not auto-loaded;
+  subagents are defined at runtime. Read `agents/coder.md` /
+  `agents/reviewer.md` and pass each file's body as the custom subagent's
+  system prompt (`define_subagent`), then dispatch the same payload.
+
+The payload is identical either way. Steps below say "spawn the
+coder/reviewer" — use whichever mechanism your host supports.
 
 ## Step 1 — Write the spec (you, with the Write tool)
 
@@ -118,7 +135,7 @@ permission; that is expected.)
 
 ## Step 3 — Spawn the coder
 
-Call the **Agent tool** with `subagent_type: coder`. Payload:
+Spawn the coder (see **Spawning the workers**). Payload:
 1. Path to the spec: `.claude/specs/<UC-ID>-<slug>.md` (and paste the spec
    body — the worker starts with no context).
 2. The affected package(s) and layer(s).
@@ -137,7 +154,7 @@ worker invent behaviour that no AC describes.
 
 ## Step 4 — Spawn the reviewer (AC only)
 
-Call the **Agent tool** with `subagent_type: reviewer`. Payload:
+Spawn the reviewer (see **Spawning the workers**). Payload:
 1. The **AC section only** — not the implementation, not the coder's
    tests.
 2. The public ROS 2 interface surface: topic / service / action names and
